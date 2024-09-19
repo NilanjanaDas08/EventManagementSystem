@@ -19,12 +19,11 @@ from django.urls import path,include
 from Authentication import views
 
 urlpatterns = [
-    path('',views.home,name='home'),
-    path('register/',views.register,name='register'),
-    path('login/',views.login,name='login') ,
-    path('accounts/logout/',views.logout,name='logout'),
-    path('profile/', views.profile, name='profile'),
-    path('admin/', admin.site.urls),
-     path('accounts/', include('django.contrib.auth.urls')), 
-   
+    path('admin/',admin.site.urls),
+    path('', views.home, name='home'),  # Redirect to home for logged-in users
+    path('register/', views.register, name='register'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('accounts/profile/', views.profile, name='profile'),  
+    path('accounts/', include('django.contrib.auth.urls')),  # Example profile path
 ]
