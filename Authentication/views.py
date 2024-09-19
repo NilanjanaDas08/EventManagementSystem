@@ -7,7 +7,7 @@ from django.contrib import messages
 
 
 def home(request):
-    return render(request, 'Registration/Home.html')
+    return render(request, 'registration/Home.html')
 
 # Registration view
 def register(request):
@@ -18,7 +18,7 @@ def register(request):
             form.save()
             messages.success(request, 'Registration successful! Please log in.')
             return redirect('login')  # Fixed redirect to work properly
-    return render(request, 'Registration/Register.html', {'form': form})
+    return render(request, 'registration/Register.html', {'form': form})
 
 # Login view
 def login_view(request):
@@ -31,7 +31,7 @@ def login_view(request):
             return redirect('home')  # Fixed redirect to work properly
         else:
             messages.error(request, "Invalid credentials")
-    return render(request, 'Registration/Login.html')
+    return render(request, 'registration/Login.html')
 
 # Logout view
 def logout_view(request):
