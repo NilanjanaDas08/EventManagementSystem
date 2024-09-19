@@ -5,9 +5,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 
-
 def home(request):
-    return render(request, 'registration/Home.html')
+    config = {}
+    if request.user.is_authenticated:
+        config['user'] = request.user.get_username()
+    return render(request, 'registration/Home.html', config)
 
 # Registration view
 def register(request):
@@ -36,8 +38,8 @@ def login_view(request):
 # Logout view
 def logout_view(request):
     logout(request)
-    messages.success(request, "You have been logged out")
-    return redirect('login')
+    # messages.success(request, "You have been logged out")
+    return redirect('home')
 
 # Profile view (example)
 @login_required
