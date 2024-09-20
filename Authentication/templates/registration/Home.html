@@ -127,9 +127,9 @@
       <div class="container section-title" data-aos="fade-up">
         <div class="section-title-container d-flex align-items-center justify-content-between">
           <h2>WELCOME TO TICKX</h2>
-          {% if user %}
+          {% if signed_in %}
           <p>
-          Welcome, {{ user }}<br>
+          Welcome, {{ signed_in }}<br>
           <a href="{% url 'logout' %}">Logout</a>
           </p>
           {% else %}

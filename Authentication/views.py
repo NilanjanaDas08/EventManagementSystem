@@ -7,8 +7,8 @@ from django.contrib import messages
 
 def home(request):
     config = {}
-    if request.user.is_authenticated:
-        config['user'] = request.user.get_username()
+    if request.user.is_authenticated == True:
+        config['signed_in'] = request.user.get_username()
     return render(request, 'registration/Home.html', config)
 
 # Registration view
