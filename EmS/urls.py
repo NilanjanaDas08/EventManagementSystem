@@ -23,8 +23,8 @@ urlpatterns = [
     path('admin/',admin.site.urls),
     path('', views.home, name='home'),  # Redirect to home for logged-in users
     path('register/', views.register, name='register'),
-    path('login/', views.login_view, name='login'),
-    path('logout/', views.logout_view, name='logout'),
+    path('accounts/login/', views.login_view, name='login'),
+    path('accounts/logout/', views.logout_view, name='logout'),
     path('accounts/profile/', views.profile, name='profile'),  
     path('accounts/', include('django.contrib.auth.urls')),  # Example profile path
     path('home/', index, name='index'),

@@ -6,12 +6,25 @@ REGISTER
 </head>
 <body>
     <h2>Register</h2>
+    <form method="POST">
+    {% csrf_token %}
+    <div class="form-group">
+        {{ form.username.label_tag }}  <!-- Username -->
+        {{ form.username }}
+    </div>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Register</button>
-    </form>
-    <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+    <div class="form-group">
+        {{ form.password1.label_tag }}  <!-- Password -->
+        {{ form.password1 }}
+    </div>
+
+    <div class="form-group">
+        {{ form.password2.label_tag }}  <!-- Confirm Password -->
+        {{ form.password2 }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register</button>
+</form>
+<p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
 </body>
 </html>
