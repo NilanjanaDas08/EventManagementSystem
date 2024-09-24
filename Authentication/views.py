@@ -13,6 +13,7 @@ def home(request):
     return render(request, 'registration/Home.html',config)
 
 # Registration view
+# NOTE: Need to account for other additional fields
 def register(request):
     config = {}
     form = config['form'] = UserForm()
@@ -23,7 +24,8 @@ def register(request):
             messages.success(request, 'Registration successful! Please log in.')
             return redirect('login')  # Fixed redirect to work properly
         else: 
-            config['error'] = 'Registration Error Occured...'
+            str = form.errors.as_text()
+            config['error'] = str[str.find("*",str.find("*")+1)+1:] # Logging Registration Form Error
     return render(request, 'registration/Register.html', config)
 
 # Login view
@@ -39,7 +41,7 @@ def login_view(request):
             return redirect('home')  # Fixed redirect to work properly
         else:
             messages.error(request, "Invalid credentials")
-            config['error'] = 'Error Occured'
+            config['error'] = "You have entered wrong username and/or password."
     return render(request, 'registration/login.html',config)
 
 # Logout view
