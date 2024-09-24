@@ -23,9 +23,9 @@ urlpatterns = [
     path('admin/',admin.site.urls),
     path('', views.home, name='home'),  # Redirect to home for logged-in users
     path('register/', views.register, name='register'),
-    path('accounts/login/', views.login_view, name='login'),
+    path('login/', views.login_view, name='login'),
     path('accounts/logout/', views.logout_view, name='logout'),
-    path('accounts/profile/', views.profile, name='profile'),  
-    path('accounts/', include('django.contrib.auth.urls')),  # Example profile path
-    # path('home/', index, name='index'), # TO BE CHANGED
+    path('home/', index, name='index'), # TO BE CHANGED
+    #path('accounts', )
+    #path('profile',views.profile,name="profile")
 ]

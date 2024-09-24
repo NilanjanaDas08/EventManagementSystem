@@ -50,7 +50,7 @@ def logout_view(request):
     # messages.success(request, "You have been logged out")
     return redirect('home')
 
-# Profile view (example)
+''''# Profile view (example)
 @login_required
 def profile(request):
-    return render(request, 'accounts/Profile.html')
+    return render(request, 'accounts/Profile.html')'''
