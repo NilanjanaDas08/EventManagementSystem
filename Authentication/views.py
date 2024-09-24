@@ -14,7 +14,8 @@ def home(request):
 
 # Registration view
 def register(request):
-    form = UserForm()
+    config = {}
+    form = config['form'] = UserForm()
     if request.method == 'POST':
         form = UserForm(request.POST)
         if form.is_valid():
@@ -22,11 +23,12 @@ def register(request):
             messages.success(request, 'Registration successful! Please log in.')
             return redirect('login')  # Fixed redirect to work properly
         else: 
-            print(form.errors)
-    return render(request, 'registration/Register.html', {'form': form})
+            config['error'] = 'Registration Error Occured...'
+    return render(request, 'registration/Register.html', config)
 
 # Login view
 def login_view(request):
+    config = {}
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -37,7 +39,8 @@ def login_view(request):
             return redirect('home')  # Fixed redirect to work properly
         else:
             messages.error(request, "Invalid credentials")
-    return render(request, 'registration/Login.html')
+            config['error'] = 'Error Occured'
+    return render(request, 'registration/login.html',config)
 
 # Logout view
 def logout_view(request):
