@@ -24,8 +24,10 @@ def register(request):
             messages.success(request, 'Registration successful! Please log in.')
             return redirect('login')  # Fixed redirect to work properly
         else: 
-            str = form.errors.as_text()
-            config['error'] = str[str.find("*",str.find("*")+1)+1:] # Logging Registration Form Error
+            # print(form.errors)
+            # str = form.errors.as_text()
+            # config['error'] = str[str.find("*",str.find("*")+1)+1:] # Logging Registration Form Error
+            config['form'] = form # Sends errors correctly
     return render(request, 'registration/Register.html', config)
 
 # Login view
