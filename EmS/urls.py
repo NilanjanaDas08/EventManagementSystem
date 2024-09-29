@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from Authentication import views
-from Event.views import index
+from Event import views
 
 urlpatterns = [
     path('admin/',admin.site.urls),
@@ -25,7 +25,8 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', views.login_view, name='login'),
     path('accounts/logout/', views.logout_view, name='logout'),
-    path('home/', index, name='index'), # TO BE CHANGED
+    path('home/', views.index, name='index'), # TO BE CHANGED
+    path('create_view/',views.create_event,name="create_event"),
     #path('accounts', )
     #path('profile',views.profile,name="profile")
 ]
