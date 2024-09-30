@@ -20,8 +20,8 @@ class Venue(models.Model):
 class Event(models.Model):
     name=models.CharField(max_length=100)
     date=models.DateField()
-    start_time=models.TimeField()
-    end_time=models.TimeField()
+    start_time=models.DateTimeField()
+    end_time=models.DateTimeField()
 
     # These fields should not be null, they are set to null to avoid migration errors, ensure proper data entry
     posted_by=models.ForeignKey(User,null=True,on_delete=models.CASCADE) 

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event List</title>
+</head>
+<body>
+    <header>
+        <h1>Event List</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'create_event' %}">Create New Event</a></li>
+                <li><a href="{% url 'logout' %}">Logout</a></li> <!-- Link to logout -->
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% if events %}
+            <ul>
+                {% for event in events %}
+                    <li>
+                        <h2>{{ event.name }}</h2>
+                        <p><strong>Date:</strong> {{ event.date }}</p>
+                        <p><strong>Start Time:</strong> {{ event.start_time }}</p>
+                        <p><strong>End Time:</strong> {{ event.end_time }}</p>
+                        <p><strong>Posted By:</strong> {{ event.posted_by.get_username }}</p>
+                        <p><strong>Venue:{{event.venue_id}}</strong></p>
+                        <hr> <!-- Add a line break for visual separation -->
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No events available.</p>
+        {% endif %}
+    </main>
+
+    <footer>
+        <p>&copy; {{ current_year }} Tickx </p> <!-- Replace with your website name -->
+    </footer>
+</body>
+</html>

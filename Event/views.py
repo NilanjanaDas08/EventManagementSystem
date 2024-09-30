@@ -24,3 +24,6 @@ def create_event(request):
             form=EventForm()
     return render(request,'create_event.html',{'form':form, 'signed_in': request.user.get_username()})
 
+def event_list(request):
+    events=Event.objects.all()
+    return render(request,'event_list.html',{'events':events})

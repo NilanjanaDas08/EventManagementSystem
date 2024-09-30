@@ -19,8 +19,9 @@ from django.urls import path,include
 
 urlpatterns = [
     path('admin/',admin.site.urls),
-    path('tickx/',include('Authentication.urls')),
-    path('tickx/',include('Event.urls')),
+    path('auth/',include('Authentication.urls')),
+    path('event/',include('Event.urls')),
+    path('',include('Event.urls')),
     #path('accounts', )
     #path('profile',views.profile,name="profile")
 ]
