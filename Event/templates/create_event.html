@@ -1,4 +1,8 @@
-{% extends "base.html" %}
+{% extends "Home.html" %}
+
+{% block section-title %}
+Post your own event
+{% endblock %}
 
 {% block content %}
   <div class="container">
@@ -22,41 +26,33 @@
       {% csrf_token %}
       
       <!-- Render form fields with Bootstrap classes for styling -->
-      <div class="form-group">
+      {% comment %} <div class="form-group">
         <label for="id_name">Event Name</label>
-        {{ form.name|add_class:"form-control" }}
-      </div>
+        <span class = "row form-control">{{ form.name }}</span>
 
-      <div class="form-group">
         <label for="id_date">Event Date</label>
-        {{ form.date|add_class:"form-control" }}
-      </div>
+        <span class="row form-control">{{ form.date }}</span>
 
-      <div class="form-group">
         <label for="id_start_time">Start Time</label>
-        {{ form.start_time|add_class:"form-control" }}
-      </div>
+        <span class="row form-control">{{ form.start_time }}</span>
 
-      <div class="form-group">
         <label for="id_end_time">End Time</label>
-        {{ form.end_time|add_class:"form-control" }}
-      </div>
+        <span class="row form-control">{{ form.end_time }}</span>
 
-      <div class="form-group">
         <label for="id_venue">Venue</label>
-        {{ form.venue|add_class:"form-control" }}
-      </div>
+        <span class="row form-control">{{ form.venue }}</span>
 
-
-      <div class="form-group">
-        <label for="id_status">Status</label>
-        {{ form.status|add_class:"form-control" }}
-      </div>
-
-      <div class="form-group">
         <label for="id_price">Price</label>
-        {{ form.price|add_class:"form-control" }}
+        <span class="row form-control">{{ form.price }}</span>
+      </div> {% endcomment %}
+
+      {% for field in form %}
+      <div class="form-group">
+        <label for="id_name">{{field.label}}</label>
+        <span class = "row form-control">{{field}}</span>
+        <span class = "text-danger">{{field.errors|striptags}}</span>
       </div>
+      {% endfor %}
 
       <!-- Submit button -->
       <button type="submit" class="btn btn-primary">Create Event</button>
