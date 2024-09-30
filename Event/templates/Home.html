@@ -70,7 +70,7 @@
       <nav id="navmenu" class="navmenu">
         <ul>
           <li><a href="{% url 'home' %}">Home</a></li>
-          <li class="dropdown"><a href="#"><span>Categories</span> <i
+          {% comment %} <li class="dropdown"><a href="#"><span>Categories</span> <i
                 class="bi bi-chevron-down toggle-dropdown"></i></a>
             <ul>
               <li><a href="category.html">Category 1</a></li>
@@ -88,7 +88,8 @@
               <li><a href="category.html">Category 3</a></li>
               <li><a href="category.html">Category 4</a></li>
             </ul>
-          </li>
+          </li> {% endcomment %}
+          <li><a href="{% url "create_event" %}">Post</a></li>
           <li><a href="contact.html">Contact</a></li>
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
@@ -126,7 +127,7 @@
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
         <div class="section-title-container d-flex align-items-center justify-content-between">
-          <h2>WELCOME TO TICKX</h2>
+          <h2>{% block section-title %} WELCOME TO TICKX{% endblock %}</h2>
           {% if signed_in %}
           <p>
           Welcome, {{ signed_in }}<br>
@@ -140,6 +141,8 @@
           {% endif %}
         </div>
       </div><!-- End Section Title -->
+
+      {% block content %}
 
       <div class="container" data-aos="fade-up">
         <div class="container" data-aos="fade-up">
@@ -321,7 +324,7 @@
 
 
     </section><!-- /Starter Section Section -->
-
+    {% endblock content %}
   </main>
 
 
