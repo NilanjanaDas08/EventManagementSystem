@@ -16,6 +16,13 @@ class Venue(models.Model):
  
     def __str__(self):
         return f"{self.name} at {self.location} with {self.no_of_seats} seats - status: {self.get_status_display()}"
+    
+class Genre(models.Model):
+    # id field is automatically created in Django as a primary key, so no need to explicitly define it.
+    name=models.CharField(max_length=255)
+    
+    def __str__(self):
+        return f"{self.id} {self.name}"
 
 class Event(models.Model):
     name=models.CharField(max_length=100)
@@ -24,8 +31,10 @@ class Event(models.Model):
     end_time=models.DateTimeField()
 
     # These fields should not be null, they are set to null to avoid migration errors, ensure proper data entry
-    posted_by=models.ForeignKey(User,null=True,on_delete=models.CASCADE) 
-    venue_id=models.ForeignKey(Venue,null=True,on_delete=models.CASCADE)
+    posted_by=models.ForeignKey(User,null=True,blank=True,on_delete=models.CASCADE) 
+    venue_id=models.ForeignKey(Venue,null=True,blank=True,on_delete=models.CASCADE)
+    genre=models.ManyToManyField(Genre,related_name='events')
+
     
     # Could consider simplifying it for sake of simplicity, otherwise these choices work
     STATUS_CHOICES=[
@@ -43,30 +52,24 @@ class Event(models.Model):
 
 class EventMedia(models.Model):
     event_id=models.ForeignKey(Event,on_delete=models.CASCADE)
-    file_name=models.CharField(max_length=100)
+    image=models.ImageField(null=True,blank=True)
     TYPE_CHOICES=[
         ('BANNER', 'banner'),
         ('DETAIL', 'detail'),
     ]
-    type=models.CharField(max_length=100,choices=TYPE_CHOICES,default='IMAGE')
-    size=models.IntegerField()
+    type=models.CharField(max_length=100,choices=TYPE_CHOICES,default='BANNER')
     created_at=models.DateTimeField(auto_now=True)
     updated_at=models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.file_name} ({self.type})-{self.size}"
 
-class Genre(models.Model):
-    # id field is automatically created in Django as a primary key, so no need to explicitly define it.
-    name=models.CharField(max_length=255)
-    
-    def __str__(self):
-        return f"{self.id} {self.name}"
 
-class EventGenre(models.Model):
+
+'''class EventGenre(models.Model):
     event_id=models.ForeignKey(Event,on_delete=models.CASCADE)
     genre_id=models.ForeignKey(Genre,on_delete=models.CASCADE)
     
     def __str__(self):
-        return f"{self.id} {self.genre_id}"
+        return f"{self.id} {self.genre_id}" '''
 
