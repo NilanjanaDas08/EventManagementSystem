@@ -9,10 +9,10 @@ Post your own event
     <h2>Create a New Event</h2>
     
     <!-- Display error messages if form validation fails -->
-    {% if form.errors %}
+    {% if form1.errors %}
       <div class="alert alert-danger">
         <ul>
-          {% for field in form %}
+          {% for field in form1 %}
             {% for error in field.errors %}
               <li>{{ field.label }}: {{ error }}</li>
             {% endfor %}
@@ -22,7 +22,7 @@ Post your own event
     {% endif %}
 
     <!-- Event creation form -->
-    <form method="POST" class="form">
+    <form method="POST" class="form" enctype="multipart/form-data">
       {% csrf_token %}
       
       <!-- Render form fields with Bootstrap classes for styling -->
@@ -46,7 +46,14 @@ Post your own event
         <span class="row form-control">{{ form.price }}</span>
       </div> {% endcomment %}
 
-      {% for field in form %}
+      {% for field in form1 %}
+      <div class="form-group">
+        <label for="id_name">{{field.label}}</label>
+        <span class = "row form-control">{{field}}</span>
+        <span class = "text-danger">{{field.errors|striptags}}</span>
+      </div>
+      {% endfor %}
+      {% for field in form2 %}
       <div class="form-group">
         <label for="id_name">{{field.label}}</label>
         <span class = "row form-control">{{field}}</span>
@@ -59,3 +66,5 @@ Post your own event
     </form>
   </div>
 {% endblock %}
+
+

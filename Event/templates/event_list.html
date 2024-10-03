@@ -27,6 +27,26 @@
                         <p><strong>End Time:</strong> {{ event.end_time }}</p>
                         <p><strong>Posted By:</strong> {{ event.posted_by.get_username }}</p>
                         <p><strong>Venue:{{event.venue_id}}</strong></p>
+                        <p><strong>Genres:{{event.genres.all}}</strong></p> <!--Might not be correct-->
+                        
+                        <!-- Could be simplified, need to look into it-->
+                        {% with event_media=event.eventmedia_set.all %}
+                        {% if event_media %}
+                        <div class="event-media">
+                            <h4>Event Media</h4>
+                            <ul>
+                                {% for media in event_media %}
+                                <li>
+                                    <h5>{{ media.type }}</h5>
+                                    <img src="{{ media.image.url }}" alt="Event Image" style="max-width: 300px;">
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% else %}
+                        <p>No media available for this event.</p>
+                        {% endif %}
+                    {% endwith %}
                         <hr> <!-- Add a line break for visual separation -->
                     </li>
                 {% endfor %}
