@@ -21,8 +21,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/',admin.site.urls),
-    path('auth/',include('Authentication.urls')),
-    path('event/',include('Event.urls')),
+    path('',include('Authentication.urls')),
     path('',include('Event.urls')),
     #path('accounts', )
     #path('profile',views.profile,name="profile")
