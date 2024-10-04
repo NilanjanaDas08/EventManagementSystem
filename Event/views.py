@@ -75,7 +75,7 @@ def search(request):
 def get_genre(request, genre_name):
     events = Event.objects.filter(genres__name = genre_name)
     genres = Genre.objects.all()
-    return render(request,'event_list.html',{'events':events, 'genres': genres, 'signed_in': request.user.get_username()})
+    return render(request,'event_list.html',{'events':events, 'genres': genres, 'genre_name': genre_name, 'signed_in': request.user.get_username()})
 
 
 

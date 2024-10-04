@@ -86,19 +86,29 @@
 </form>
 </div>
 
-{% comment %} {% if search_query %}
-<p> Searching for {{search_query}}</p>
-{% endif %} {% endcomment %}
-
 <br><br>
 
 {% if events %}
     <div class="container" data-aos = "fade-up">
+
         {% if search_query %}
-        <div class="alert alert-info" role="alert">
-          <strong>Searching for:</strong> <span class="fw-bold">{{ search_query }}</span>
+        <div class="alert alert-info alert-dismissable fade show" role="alert">
+            <div class="input-group">
+              <strong>Searching for:  <span class="fw-bold">{{ search_query }}</span> </strong>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="margin-left: auto;"></button>
+            </div>
         </div>
-      {% endif %}
+        {% endif %}
+        
+        {% if genre_name %}
+        <div class="alert alert-info" role="alert">
+            <div class="input-group">
+                <strong>Retrieving <span class="fw-bold">{{ genre_name }}</span> Events</strong> 
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="margin-left: auto;"></button>
+            </div>
+          </div>
+        {% endif %}
+        
         <div class="row">
             {% for event in events %}
                 <div class="col-md-4 mb-4"> <!-- Creates 3 columns on medium and larger screens -->
@@ -106,26 +116,12 @@
                         <div class="card-body">
                             {% if event.get_media %}
                                 {% for media in event.get_media %}
-                                    {% comment %} <figure>
-                                        <img src="{{ media.image.url }}" alt="{{ media.name }}" style="max-width: 100%; height: auto;">
-                                        <figcaption>{{media.name}}</figcaption>
-                                    </figure> {% endcomment %}
                                     <img src="{{ media.image.url }}" alt="{{ media.name }}" style="max-width: 100%; height: auto;">
                                 {% endfor %}
                             {% else %}
                                 <p>No images available for this event</p>
                             {% endif %}
                             <h5 class="card-title text-center">{{ event.name }}</h5>
-                            {% comment %} <p class="card-text"><strong>Date:</strong> {{ event.date }}</p>
-                            <p class="card-text"><strong>Start Time:</strong> {{ event.start_time }}</p>
-                            <p class="card-text"><strong>End Time:</strong> {{ event.end_time }}</p>
-                            <p class="card-text"><strong>Posted By:</strong> {{ event.posted_by.get_username }}</p>
-                            <p class="card-text"><strong>Venue:</strong> {{ event.venue_id }}</p>
-                            <p class="card-text"><strong>Genres:</strong> 
-                                {% for genre in event.genres.all %} 
-                                    {{ genre }} 
-                                {% endfor %}
-                            </p> {% endcomment %}
                         </div>
                     </div>
                 </div>
