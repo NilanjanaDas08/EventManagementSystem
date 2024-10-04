@@ -1,4 +1,5 @@
-from django import forms 
+from django import forms
+from django.forms import modelformset_factory 
 from .models import Event,EventMedia
 
 class EventForm(forms.ModelForm):
@@ -15,3 +16,8 @@ class EventMediaForm(forms.ModelForm):
     class Meta:
         model = EventMedia
         fields = ['type','image']
+        widgets = {
+            'type': forms.Select(choices=EventMedia.TYPE_CHOICES),
+        }
+
+EventMediaFormSet = modelformset_factory(EventMedia, form=EventMediaForm, extra=2)

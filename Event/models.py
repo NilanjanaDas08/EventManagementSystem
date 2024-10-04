@@ -18,7 +18,6 @@ class Venue(models.Model):
         return f"{self.name} at {self.location} with {self.no_of_seats} seats - status: {self.get_status_display()}"
 
 class Genre(models.Model):
-    # id field is automatically created in Django as a primary key, so no need to explicitly define it.
     name=models.CharField(max_length=255)
     
     def __str__(self):
@@ -49,8 +48,12 @@ class Event(models.Model):
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
 
+    def get_media(self):
+        return EventMedia.objects.filter(event_id = self)
+
     def __str__(self):
         return f"{self.name} on {self.date} from {self.start_time} to {self.end_time} - Status: {self.get_status_display()}"
+
 
 class EventMedia(models.Model):
     event_id=models.ForeignKey(Event,on_delete=models.CASCADE)
@@ -67,7 +70,7 @@ class EventMedia(models.Model):
 
     def __str__(self):
         return f"{self.image.name} ({self.type})-{self.image.size}"
-
+    
 # class EventGenre(models.Model):
 #     event_id=models.ForeignKey(Event,on_delete=models.CASCADE)
 #     genre_id=models.ForeignKey(Genre,on_delete=models.CASCADE)

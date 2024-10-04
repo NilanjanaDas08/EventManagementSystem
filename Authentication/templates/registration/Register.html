@@ -1,38 +1,3 @@
-{% comment %} <!DOCTYPE html>
-<html>
-<head>
-    <title>Register</title>
-</head>
-<body>
-    <h2>Register</h2>
-    <form method="POST">
-        {% csrf_token %}
-        <div class="form-group">
-            {{ form.username.label_tag }}  <!-- Username -->
-            {{ form.username }}
-        </div>
-
-        <div class="form-group">
-            {{ form.password1.label_tag }}  <!-- Password -->
-            {{ form.password1 }}
-        </div>
-
-        <div class="form-group">
-            {{ form.password2.label_tag }}  <!-- Confirm Password -->
-            {{ form.password2 }}
-        </div>
-
-        <button type="submit" class="btn btn-primary">Register</button>
-    </form>
-
-    {% if error %}
-    <p> {{error}} </p>
-    {% endif %}
-
-<p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
-</body>
-</html>  {% endcomment %}
-
 {% load static %}
 
 <!DOCTYPE html>
@@ -86,25 +51,7 @@
       <nav id="navmenu" class="navmenu">
         <ul>
           <li><a href="{% url 'home' %}">Home</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="single-post.html">Single Post</a></li>
-          <li class="dropdown"><a href="#"><span>Categories</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-            <ul>
-              <li><a href="category.html">Category 1</a></li>
-              <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-                <ul>
-                  <li><a href="#">Deep Dropdown 1</a></li>
-                  <li><a href="#">Deep Dropdown 2</a></li>
-                  <li><a href="#">Deep Dropdown 3</a></li>
-                  <li><a href="#">Deep Dropdown 4</a></li>
-                  <li><a href="#">Deep Dropdown 5</a></li>
-                </ul>
-              </li>
-              <li><a href="category.html">Category 2</a></li>
-              <li><a href="category.html">Category 3</a></li>
-              <li><a href="category.html">Category 4</a></li>
-            </ul>
-          </li>
+          <li><a href="{% url 'create_event' %}">Post</a></li>
           <li><a href="contact.html">Contact</a></li>
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
@@ -134,9 +81,12 @@
 
       <!-- Registration Form -->
       <!-- NOTE: Need to update css for better look -->
-      <div class="container" data-aos="fade-up">
+      {% comment %} <div class="container" data-aos="fade-up">
         <section id="comment-form" class="comment-form section">
-            <div class="container">
+            <div class="container col">
+              <img src="{% static 'assets/img/register.svg'%}">
+            </div>
+            <div class="container col">
                 <form method="POST">
                     <div class="text-center">
                     <h4>Register Here</h4>
@@ -147,16 +97,11 @@
                     
                     {% for fm in form %}
 
-                    <div class="text-center">
                         <div class="row">
-                        <div class="col form-group">
-                            <div class="form-control">
                               <b>{{ fm.label_tag }}</b>
                               {{ fm }}
                               <div class="text-danger">{{fm.errors|striptags}}</div>
-                            </div>
                         </div>
-                    </div>
             
                     {% endfor %}
 
@@ -169,7 +114,46 @@
             </div>
         </section>
             
-      </div>
+      </div> {% endcomment %}
+
+    <div class="container" data-aos="fade-up">
+      <section id="comment-form" class="comment-form section">
+          <div class="row justify-content-center align-items-center">
+              <!-- Image Column -->
+              <div class="col-lg-6 col-md-5 text-center mb-4 mb-md-0">
+                  <img src="{% static 'assets/img/register.svg' %}" alt="Register" class="img-fluid">
+              </div>
+  
+              <!-- Form Column -->
+              <div class="col-lg-6 col-md-7">
+                  <form method="POST" class="bg-light p-4 rounded shadow-sm">
+                      <div class="text-center mb-4">
+                          <h4 class="font-weight-bold">Register Here</h4>
+                          <p class="text-muted">Enter valid credentials</p>
+                      </div>
+  
+                      {% csrf_token %}
+                      
+                      {% for fm in form %}
+                          <div class="form-group row">
+                              <label for="{{ fm.id_for_label }}" class="font-weight-semibold">{{ fm.label }}</label>
+                              {{ fm }}
+                              <div class="text-danger mt-1">{{ fm.errors|striptags }}</div>
+                          </div>
+                      {% endfor %}
+                      
+                      <div class="form-group text-center">
+                          <p class="mb-4">Already have an account? <a href="{% url 'login' %}" class="text-primary font-weight-bold">Login Here</a></p>
+                      </div>
+  
+                      <div class="form-group text-center">
+                          <button type="submit" class="btn btn-primary btn-block">Register</button>
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </section>
+  </div>
 
     </section><!-- /Starter Section Section -->
 

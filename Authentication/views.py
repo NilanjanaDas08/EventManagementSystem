@@ -32,6 +32,9 @@ def login_view(request):
         if user is not None:
             login(request, user)
             messages.success(request,f'Welcome,{username}!')
+            
+            next_url = request.GET.get('next','/')
+            if next_url: return redirect(next_url);
             return redirect('home')  # Fixed redirect to work properly
         else:
             messages.error(request, "Invalid credentials")

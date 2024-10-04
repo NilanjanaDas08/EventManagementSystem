@@ -53,12 +53,14 @@ Post your own event
         <span class = "text-danger">{{field.errors|striptags}}</span>
       </div>
       {% endfor %}
+      
       {% for field in form2 %}
       <div class="form-group">
         <label for="id_name">{{field.label}}</label>
         <span class = "row form-control">{{field}}</span>
         <span class = "text-danger">{{field.errors|striptags}}</span>
       </div>
+      
       {% endfor %}
 
       <!-- Submit button -->
@@ -66,5 +68,3 @@ Post your own event
     </form>
   </div>
 {% endblock %}
-
-
