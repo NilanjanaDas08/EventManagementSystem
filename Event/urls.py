@@ -6,4 +6,5 @@ urlpatterns = [
     path('post/',views.create_event,name="create_event"),
     path('event_list/',views.event_list,name="event_list"),
     path('search/',views.search,name="search"),   
+    path('genres/<str:genre_name>/',views.get_genre,name="get_genre"),   
 ]

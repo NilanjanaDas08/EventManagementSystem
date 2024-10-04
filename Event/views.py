@@ -1,12 +1,13 @@
 from django.shortcuts import render,redirect
 # from .forms import EventForm, EventMediaFormSet
 from .forms import EventForm, EventMediaForm
-from .models import Event
+from .models import Event,Genre
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
 def home(request):
     config = {}
+    config['genres'] = Genre.objects.all()
     if request.user.is_authenticated == True:
         config['signed_in'] = request.user.get_username()
     return render(request, 'Home.html',config)
@@ -64,6 +65,11 @@ def search(request):
         
         events = Event.objects.filter(filter)
     return render(request,'event_list.html',{'events':events})
+
+def get_genre(request, genre_name):
+    events = Event.objects.filter(genres__name = genre_name)
+    return render(request,'event_list.html',{'events':events})
+
 
 
 

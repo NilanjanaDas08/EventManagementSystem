@@ -134,10 +134,12 @@
           <a href="{% url 'logout' %}">Logout</a>
           </p>
           {% else %}
-          <p>
-            <a href="{% url 'login'%}">Sign In</a>
-            <a href="{% url 'register'%}">Register</a>
-          </p>
+          <div class="d-flex gap-2">
+            {% comment %} <a href="{% url 'login'%}">Sign In</a> {% endcomment %}
+            {% comment %} <a href="{% url 'register'%}">Register</a> {% endcomment %}
+            <form method="GET" action="{% url "login" %}"><button class="btn btn-outline-secondary" type="submit">Sign In</button></form>
+            <form method="GET" action="{% url "register" %}"><button class="btn btn-secondary" type="submit">Register</button></form>
+          </div>
           {% endif %}
         </div>
       </div><!-- End Section Title -->
@@ -152,6 +154,14 @@
             <div class="input-group w-75">
                 <input type="text" class="form-control" name="name" placeholder="Event Name" aria-label="Event Name">
                 <input type="text" class="form-control" name="genre" placeholder="Genre" aria-label="Genre">
+                <div class="input-group-append">
+                  <select class="form-select" id="genre" name="genre">
+                      <option value="" selected disabled>Select Genre</option>
+                      {% for genre in genres %}
+                      <option value="{{genre.name}}">{{genre.name}}</option>
+                      {% endfor %}
+                  </select>
+                </div>
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-search"></i> Search
                 </button>
@@ -290,6 +300,7 @@
                         '22</span></div>
                     <h2><a href="blog-details.html">Let’s Get Back to Work, New York</a></h2>
                   </div>
+
                   <div class="post-entry">
                     <a href="blog-details.html"><img src="{% static 'assets/img/post-landscape-5.jpg' %}" alt=""
                         class="img-fluid"></a>
@@ -299,6 +310,7 @@
                     </h2>
                   </div>
                 </div>
+                
                 <div class="col-lg-4 border-start custom-border">
                   <div class="post-entry">
                     <a href="blog-details.html"><img src="{% static 'assets/img/post-landscape-3.jpg' %}" alt=""
@@ -315,20 +327,23 @@
                     <h2><a href="blog-details.html">10 Life-Changing Hacks Every Working Mom Should Know</a></h2>
                   </div>
                 </div>
-                <div class="col-lg-4 border-start custom-border">
-                  <div class="post-entry">
-                    <a href="blog-details.html"><img src="{% static 'assets/img/post-landscape-7.jpg' %}" alt="" class="img-fluid"></a>
-                    <div class="post-meta"><span class="date">Design</span> <span class="mx-1">•</span> <span>Mar 15th '22</span></div>
-                    <h2><a href="blog-details.html">Why Craigslist Tampa Is One of The Most Interesting Places On the Web?</a></h2>
-                  </div>
-                  <div class="post-entry">
-                    <a href="blog-details.html"><img src="{% static 'assets/img/post-landscape-8.jpg' %}" alt="" class="img-fluid"></a>
-                    <div class="post-meta"><span class="date">Travel</span> <span class="mx-1">•</span> <span>Jul 5th '22</span></div>
-                    <h2><a href="blog-details.html">5 Great Startup Tips for Female Founders</a></h2>
-                  </div>
-                </div>
-              </div>
 
+                <div class="col-lg-4">
+                  <div class="trending">
+                    <h3>Trending Genres</h3>
+                    <ul class="trending-post">
+                      {% for genre in genres %}
+                      <li>
+                        <a href="{% url 'get_genre' genre.name %}">
+                          <h6>{{genre.name}}</h6>
+                        </a>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                </div>
+
+              </div>
+              
             </div> <!-- End .row -->
           </div>
 
