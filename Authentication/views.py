@@ -35,7 +35,7 @@ def login_view(request):
             
             next_url = request.GET.get('next','/')
             if next_url: return redirect(next_url);
-            return redirect('home')  # Fixed redirect to work properly
+            # return redirect('home')  # Fixed redirect to work properly
         else:
             messages.error(request, "Invalid credentials")
             config['error'] = "You have entered wrong username and/or password."
