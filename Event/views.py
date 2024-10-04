@@ -45,13 +45,16 @@ def create_event(request):
 
 def event_list(request):
     events=Event.objects.all()
-    return render(request,'event_list.html',{'events':events})
+    genres=Genre.objects.all()
+    return render(request,'event_list.html',{'events':events, 'genres': genres, 'signed_in': request.user.get_username()})
 
 def search(request):
     events = Event.objects.none()
+    genres = Genre.objects.all()
     if request.method == "POST":
         event = request.POST['name']
         genre = request.POST['genre']
+        search_query = []
         
         # events = Event.objects.filter(name=event if event else None,genre=genre if genre else None)
         
@@ -59,16 +62,20 @@ def search(request):
         
         if event:
             filter &= Q(name__contains=event)
-            
+            search_query.append(event)
+
         if genre:
             filter &= Q(genres__name__contains = genre)
+            search_query.append(genre)
         
         events = Event.objects.filter(filter)
-    return render(request,'event_list.html',{'events':events})
+
+    return render(request,'event_list.html',{'events':events, 'search_query': " & ".join(search_query),'genres': genres, 'signed_in': request.user.get_username()})
 
 def get_genre(request, genre_name):
     events = Event.objects.filter(genres__name = genre_name)
-    return render(request,'event_list.html',{'events':events})
+    genres = Genre.objects.all()
+    return render(request,'event_list.html',{'events':events, 'genres': genres, 'signed_in': request.user.get_username()})
 
 
 
