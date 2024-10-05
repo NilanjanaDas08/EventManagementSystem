@@ -44,7 +44,7 @@ def create_event(request):
     return render(request,'create_event.html',{'form1':form1, 'form2': form2, 'signed_in': request.user.get_username()})
 
 def event_list(request):
-    events=Event.objects.all()
+    events=Event.objects.filter(status='UPCOMING')
     genres=Genre.objects.all()
     return render(request,'event_list.html',{'events':events, 'genres': genres, 'signed_in': request.user.get_username()})
 
@@ -58,7 +58,7 @@ def search(request):
         
         # events = Event.objects.filter(name=event if event else None,genre=genre if genre else None)
         
-        filter = Q()
+        filter = Q(status='UPCOMING')
         
         if event:
             filter &= Q(name__contains=event)
