@@ -51,9 +51,9 @@ def event_list(request):
 def search(request):
     events = Event.objects.none()
     genres = Genre.objects.all()
-    if request.method == "POST":
-        event = request.POST['name']
-        genre = request.POST['genre']
+    if request.method=="GET":
+        event=request.GET.get('name','').strip()
+        genre=request.GET.get('genre','').strip()
         search_query = []
         
         # events = Event.objects.filter(name=event if event else None,genre=genre if genre else None)

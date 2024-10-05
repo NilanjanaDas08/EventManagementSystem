@@ -137,7 +137,7 @@
       <!-- Search Bar -->
       <div class="container" data-aos = "fade-up">
         <h4 class="text-center mb-4">Search Events</h4>
-        <form class="d-flex justify-content-center align-items-center bg-light shadow-sm" method="POST" action="{% url 'search' %}">
+        <form class="d-flex justify-content-center align-items-center bg-light shadow-sm" method="GET" action="{% url 'search' %}">
             {% csrf_token %}
             <div class="input-group w-75">
                 <input type="text" class="form-control" name="name" placeholder="Event Name" aria-label="Event Name">
