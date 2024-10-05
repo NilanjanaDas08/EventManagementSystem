@@ -3,11 +3,13 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from .forms import UserForm
+from Event.models import Genre 
 
 # Registration view
 # NOTE: Need to account for other additional fields
 def register(request):
     config = {}
+    config['genres'] = Genre.objects.all()
     form = config['form'] = UserForm()
     if request.method == 'POST':
         form = UserForm(request.POST)
@@ -25,6 +27,7 @@ def register(request):
 # Login view
 def login_view(request):
     config = {}
+    config['genres'] = Genre.objects.all()
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']

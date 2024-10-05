@@ -15,7 +15,7 @@ class Venue(models.Model):
     updated_at=models.DateTimeField(auto_now=True)
  
     def __str__(self):
-        return f"{self.name} at {self.location} with {self.no_of_seats} seats - status: {self.get_status_display()}"
+        return f"{self.name} at {self.location} with {self.no_of_seats} seats"
 
 class Genre(models.Model):
     name=models.CharField(max_length=255)

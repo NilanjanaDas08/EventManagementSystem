@@ -51,8 +51,16 @@
       <nav id="navmenu" class="navmenu">
         <ul>
           <li><a href="{% url 'home' %}">Home</a></li>
-          <li><a href="{% url 'create_event' %}">Post</a></li>
-          <li><a href="contact.html">Contact</a></li>
+          <li><a href="{% url "create_event" %}">Post</a></li>
+          <li class="dropdown"><a href="#"><span>Genres</span> <i
+            class="bi bi-chevron-down toggle-dropdown"></i></a>
+        <ul>
+          {% for genre in genres %}
+          <li><a href="{% url "get_genre" genre.name %}">{{genre.name}}</a></li>
+          {% endfor %}
+        </ul>
+      </li> 
+          <li><a href="{% url "event_list" %}">List</a></li>
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
@@ -78,43 +86,6 @@
           <h2>Registration Page</h2>
         </div>
       </div><!-- End Section Title -->
-
-      <!-- Registration Form -->
-      <!-- NOTE: Need to update css for better look -->
-      {% comment %} <div class="container" data-aos="fade-up">
-        <section id="comment-form" class="comment-form section">
-            <div class="container col">
-              <img src="{% static 'assets/img/register.svg'%}">
-            </div>
-            <div class="container col">
-                <form method="POST">
-                    <div class="text-center">
-                    <h4>Register Here</h4>
-                    <p>Enter valid credentials</p>
-                    </div>
-                    
-                    {% csrf_token %}
-                    
-                    {% for fm in form %}
-
-                        <div class="row">
-                              <b>{{ fm.label_tag }}</b>
-                              {{ fm }}
-                              <div class="text-danger">{{fm.errors|striptags}}</div>
-                        </div>
-            
-                    {% endfor %}
-
-                    <p>Already have an account? <a href="{% url 'login' %}">Login Here</a></p>
-
-                    <div class="text-center">
-                      <button type="submit" class="btn btn-primary">Register</button>
-                    </div>
-                </form>
-            </div>
-        </section>
-            
-      </div> {% endcomment %}
 
     <div class="container" data-aos="fade-up">
       <section id="comment-form" class="comment-form section">
