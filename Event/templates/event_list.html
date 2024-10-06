@@ -1,69 +1,10 @@
-
 {% extends "Home.html" %}
-{% comment %} <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event List</title>
-</head>
-<body>
-    <header>
-        <h1>Event List</h1>
-        <nav>
-            <ul>
-                <li><a href="{% url 'create_event' %}">Create New Event</a></li>
-                <li><a href="{% url 'logout' %}">Logout</a></li> <!-- Link to logout -->
-            </ul>
-        </nav>
-    </header>
 
-    <main>
-        {% if events %}
-            <ul>
-                {% for event in events %}
-                    <li>
-                        <h2>{{ event.name }}</h2>
-                        <p><strong>Date:</strong> {{ event.date }}</p>
-                        <p><strong>Start Time:</strong> {{ event.start_time }}</p>
-                        <p><strong>End Time:</strong> {{ event.end_time }}</p>
-                        <p><strong>Posted By:</strong> {{ event.posted_by.get_username }}</p>
-                        <p><strong>Venue:{{event.venue_id}}</strong></p>
-                        <p><strong>Genres:{% for genre in event.genres.all %} {{genre}} {% endfor %%}</strong></p> 
-
-                        {% if event.get_media %}
-                            <p><strong>Images: </strong></p>
-                            {% for media in event.get_media %}
-                                <figure>
-                                    <h5>{{media.type}}</h5>
-                                    <img src="{{media.image.url}}" alt="{{image.name}}" style="max-width: 300px;">
-                                </figure>
-                            {% endfor %}
-                        {% else %}
-                            <p>No images available for this event</p>
-                        {% endif %}
-
-                        <hr> <!-- Add a line break for visual separation -->
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No events available.</p>
-        {% endif %}
-    </main>
-
-    <footer>
-        <p>&copy; {{ current_year }} Tickx </p> <!-- Replace with your website name -->
-    </footer>
-</body>
-</html> {% endcomment %}
-
-{% block title %}Event List{%endblock%}
+{% block title %}Event List{% endblock %}
 
 {% block section-title %}Event List{% endblock %}
 
 {% block content %}
-
 <div class="container-fluid" data-aos="fade-up">
     <div class="row d-flex">
 
@@ -82,79 +23,94 @@
             </div>
         </div>
 
-
         <div class="col-md-9 flex-column">
             <!-- Search Bar -->
-            <div class="container" data-aos = "fade-up">
-            <h4 class="text-center mb-4">Search Events</h4>
-            <form class="d-flex justify-content-center align-items-center bg-light shadow-sm" method="POST" action="{% url 'search' %}">
-                {% csrf_token %}
-                <div class="input-group w-75">
-                    <input type="text" class="form-control" name="name" placeholder="Event Name" aria-label="Event Name">
-                    <input type="text" class="form-control" name="genre" placeholder="Genre" aria-label="Genre">
-                    <div class="input-group-append">
-                        <select class="form-select" id="genre" name="genre">
-                            <option value="" selected disabled>Select Genre</option>
-                            {% for genre in genres %}
-                            <option value="{{genre.name}}">{{genre.name}}</option>
-                            {% endfor %}
-                        </select>
+            <div class="container" data-aos="fade-up">
+                <h4 class="text-center mb-4">Search Events</h4>
+                <form class="d-flex justify-content-center align-items-center bg-light shadow-sm" method="POST" action="{% url 'search' %}">
+                    {% csrf_token %}
+                    <div class="input-group w-75">
+                        <input type="text" class="form-control" name="name" placeholder="Event Name" aria-label="Event Name">
+                        <div class="input-group-append">
+                            <select class="form-select" id="genre" name="genre">
+                                <option value="" selected disabled>Select Genre</option>
+                                {% for genre in genres %}
+                                    <option value="{{ genre.name }}">{{ genre.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-search"></i> Search
+                        </button>
                     </div>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-search"></i> Search
-                    </button>
-                </div>
-            </form>
+                </form>
             </div>
-    
+
             <br><br>
-    
+
             {% if events %}
-                <div class="container" data-aos = "fade-up">
-    
+                <div class="container" data-aos="fade-up">
                     {% if search_query %}
-                    <div class="alert alert-info alert-dismissable fade show" role="alert">
-                        <div class="input-group">
-                        <strong>Searching for:  <span class="fw-bold">{{ search_query }}</span> </strong>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="margin-left: auto;"></button>
+                        <div class="alert alert-info alert-dismissable fade show" role="alert">
+                            <div class="input-group">
+                                <strong>Searching for: <span class="fw-bold">{{ search_query }}</span></strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="margin-left: auto;"></button>
+                            </div>
                         </div>
-                    </div>
                     {% endif %}
-                    
+
                     {% if genre_name %}
-                    <div class="alert alert-info" role="alert">
-                        <div class="input-group">
-                            <strong>Retrieving <span class="fw-bold">{{ genre_name }}</span> Events</strong> 
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="margin-left: auto;"></button>
+                        <div class="alert alert-info" role="alert">
+                            <div class="input-group">
+                                <strong>Retrieving <span class="fw-bold">{{ genre_name }}</span> Events</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="margin-left: auto;"></button>
+                            </div>
                         </div>
-                    </div>
                     {% endif %}
-                    
-                    <div class="row">
-                        {% for event in events %}
-                            <div class="col-md-4 mb-4"> <!-- Creates 3 columns on medium and larger screens -->
-                                <div class="card h-100"> <!-- Bootstrap card to style each event -->
-                                    <div class="card-body">
-                                        {% if event.get_media %}
-                                            {% for media in event.get_media %}
-                                                <img src="{{ media.image.url }}" alt="{{ media.name }}" style="max-width: 100%; height: auto;">
-                                            {% endfor %}
-                                        {% else %}
-                                            <img src="https://via.placeholder.com/150" alt="{{ media.name }}" style="max-width: 100%; height: auto;">
-                                        {% endif %}
-                                        <h5 class="card-title text-center"><a href="{% url "details" event.id %}">{{ event.name }}</a></h5>
-                                        <p class="card-text">{{ event.details|slice:":100" }}...</p>
-                                    </div>
+                </div>
+
+                <div class="row">
+                    {% for event in page_obj %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    {% if event.get_media %}
+                                        {% for media in event.get_media %}
+                                            <img src="{{ media.image.url }}" alt="{{ media.name }}" style="max-width: 100%; height: auto;">
+                                        {% endfor %}
+                                    {% else %}
+                                        <img src="https://via.placeholder.com/150" alt="No image available" style="max-width: 100%; height: auto;">
+                                    {% endif %}
+                                    <h5 class="card-title text-center"><a href="{% url 'details' event.id %}">{{ event.name }}</a></h5>
+                                    <p class="card-text">{{ event.details|slice:":100" }}...</p>
                                 </div>
                             </div>
-                        {% endfor %}
-                    </div>
+                        </div>
+                    {% endfor %}
                 </div>
             {% else %}
                 <p>No events available.</p>
             {% endif %}
         </div>
     </div>
+</div>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; First</a>
+            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+        {% endif %}
+    </span>
 </div>
 
 {% endblock %}

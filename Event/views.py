@@ -4,6 +4,8 @@ from .forms import EventForm, EventMediaForm
 from .models import Event,Genre
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.core.paginator import Paginator
+
 
 def home(request):
     config = {}
@@ -44,19 +46,40 @@ def create_event(request):
     return render(request,'create_event.html',{'form1':form1, 'form2': form2, 'signed_in': request.user.get_username()})
 
 def event_list(request):
-    events=Event.objects.filter(status='UPCOMING')
+    events=Event.objects.filter(status='UPCOMING').prefetch_related('genres')
+    paginator=Paginator(events,6)
+    page_number=request.GET.get('page')
+    page_obj=paginator.get_page(page_number)
     genres=Genre.objects.all()
-    return render(request,'event_list.html',{'events':events, 'genres': genres, 'signed_in': request.user.get_username()})
+    return render(request,'event_list.html',{'events':events, 'genres': genres,'page_obj':page_obj, 'signed_in': request.user.get_username()})
+
+'''def search(request):
+    events=Event.objects.none()
+    genres=Genre.objects.all()
+    search_query=[]
+    if request.method=='GET':
+        event=request.GET.get('name','').strip()
+        genre=request.GET.get('genre','').strip()
+        filter_criteria={'status':'UPCOMING'}              Nilanjana
+        if event:
+            filter_criteria['name__icontains']=event
+            search_query.append(event)
+        if genre:
+            filter_criteria['genres__name__icontains']=genre
+            search_query.append(genre)
+        events=Event.objects.filter(**filter_criteria)
+    return render(request,'event_list.html',{'events':events, 'search_query': search_query,'genres': genres, 'signed_in': request.user.get_username()})'''
+
+
 
 def search(request):
     events = Event.objects.none()
     genres = Genre.objects.all()
+    search_query=[]
     if request.method=="GET":
         event=request.GET.get('name','').strip()
         genre=request.GET.get('genre','').strip()
-        search_query = []
-        
-        # events = Event.objects.filter(name=event if event else None,genre=genre if genre else None)
+         # events = Event.objects.filter(name=event if event else None,genre=genre if genre else None)
         
         filter = Q(status='UPCOMING')
         
@@ -75,7 +98,10 @@ def search(request):
 def get_genre(request, genre_name):
     events = Event.objects.filter(genres__name = genre_name)
     genres = Genre.objects.all()
-    return render(request,'event_list.html',{'events':events, 'genres': genres, 'genre_name': genre_name, 'signed_in': request.user.get_username()})
+    paginator=Paginator(events,6)
+    page_number=request.GET.get('page')
+    page_obj=paginator.get_page(page_number)
+    return render(request,'event_list.html',{'events':events, 'genres': genres, 'genre_name': genre_name,'page_obj':page_obj, 'signed_in': request.user.get_username()})
 
 def details(request, event_id):
     config = {}
