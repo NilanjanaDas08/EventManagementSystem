@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/',admin.site.urls),
     path('',include('Authentication.urls')),
     path('',include('Event.urls')),
+    path('',include('Booking.urls')),
     #path('accounts', )
     #path('profile',views.profile,name="profile")
 ]

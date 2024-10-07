@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation</title>
+</head>
+<body>
+
+<div class="container">
+    <h1>Booking Confirmation</h1>
+
+    <h2>Your Booking Details</h2>
+    <p>Event: {{ booking.event_id.title }}</p>
+    <p>Date: {{ booking.event_id.date }}</p>
+    <p>Number of Seats Booked: {{ booking.no_of_seats_booked }}</p>
+    <p>Total Payment: ${{ booking.payment }}</p>
+    <p>Payment Method: {{ booking.paid_using.name }}</p>
+    <p>Booking ID: {{ booking.id }}</p>
+
+    <div class="back-link">
+        <a href="{% url 'book_ticket' booking.event_id.id %}">Book Another Ticket</a>
+    </div>
+</div>
+
+</body>
+</html>
