@@ -1,7 +1,7 @@
 import random
 from datetime import datetime,timedelta
 from faker import Faker
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandParser
 from Event.models import Event,Venue,Genre,EventMedia
 from Authentication.models import User
 from django.utils import timezone
@@ -14,12 +14,25 @@ from django.core.files.storage import default_storage
 class Command(BaseCommand):
     help='Generate random data for Event and Venue models'
 
+    def add_arguments(self, parser: CommandParser):
+        parser.add_argument('--users', type=int, default=40, help="Number of users to seed in database")
+        parser.add_argument('--genres', type=str, help="Comma-seperated list of genres to seed in database")
+        parser.add_argument('--venues', type=int, default=30, help="Number of venues to seed in database")
+        parser.add_argument('--events', type=int, default=30, help="Number of events to seed in database")
+
     def handle(self,*args,**options):
         fake=Faker('en_IN')
 
+        # Getting number of users, venues, events and genres to create
+        number_of_users = options['users']
+        number_of_venues = options['venues']
+        number_of_events = options['events']
+
+        if options['genres']: genres = [genre.strip() for genre in options['genres'].split(",")];
+        else: genres=['Comedy','Musical','Drama','Action','Horror'];
+
         #Specify no of fake users you want to create
         self.stdout.write(self.style.SUCCESS("Seeding User......."))
-        number_of_users=40
         for u in range(number_of_users):
             user=User.objects.create_user(
             username=fake.user_name(),
@@ -39,7 +52,6 @@ class Command(BaseCommand):
 
         # Seeding Genre Data
         self.stdout.write(self.style.SUCCESS("Seeding Genres......."))
-        genres=['Comedy','Musical','Drama','Action','Horror']
         for genre in genres:
              Genre.objects.get_or_create(name=genre)
         self.stdout.write(self.style.SUCCESS("Successfully Seeded Genres!"))
@@ -53,7 +65,7 @@ class Command(BaseCommand):
 
         #Created sample venues
         self.stdout.write(self.style.SUCCESS("Seeding Venues......."))
-        for v in range(30):
+        for v in range(number_of_venues):
             venue=Venue.objects.create(
                 name = generate_venue_names(),
                 location= fake.address().replace('\n', ', '),  # Replace newlines with commas for address
@@ -81,9 +93,9 @@ class Command(BaseCommand):
 
         # Create some sample events
         self.stdout.write(self.style.SUCCESS("Seeding Events......."))
-        for i in range(30):  
+        for i in range(number_of_events):  
             # event_date = datetime.now().date() + timedelta(days=random.randint(1, 30))
-            get_date = fake.date_this_year()
+            get_date = random.choice([fake.date_this_year(before_today=False,after_today=True),fake.date_this_year()])
             event_date = get_date
             random_hour = random.randint(9,18) # For timing between 9:00 am to 6:00 pm
             random_minute = random.randint(0,59)
@@ -99,7 +111,7 @@ class Command(BaseCommand):
                 posted_by=User.objects.order_by('?').first(),  # Random user from existing users
                 venue_id=Venue.objects.order_by('?').first(),  # Random venue
                 # status=random.choice(Event.STATUS_CHOICES)[0],
-                status="UPCOMING",
+                status="UPCOMING" if timezone.make_aware(datetime.datetime.combine(event_date,datetime.datetime.min.time())) > timezone.now() else "COMPLETED",
                 price=round(random.uniform(100, 1000), 2)  # Random price between 100 and 1000
             )
             

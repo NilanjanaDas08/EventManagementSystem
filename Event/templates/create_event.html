@@ -73,4 +73,23 @@ Post your own event
       <button type="submit" class="btn btn-primary">Create Event</button>
     </form>
   </div>
+
+  <!-- Should add the date into time fields on event date set-->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const dateInput = document.querySelector('#id_date');
+      const startTimeInput = document.querySelector('#id_start_time');
+      const endTimeInput = document.querySelector('#id_end_time');
+  
+      // When the user selects a date, set the start_time and end_time
+      dateInput.addEventListener('change', function () {
+        const selectedDate = dateInput.value;  // Get the selected date
+        if (selectedDate) {
+          // Set default start_time and end_time values with 00:00 and 01:00 respectively
+          startTimeInput.value = selectedDate + 'T12:00';
+          endTimeInput.value = selectedDate + 'T13:00';
+        }
+      });
+    });
+  </script>
 {% endblock %}

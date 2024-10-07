@@ -138,10 +138,9 @@
       <div class="container" data-aos = "fade-up">
         <h4 class="text-center mb-4">Search Events</h4>
         <form class="d-flex justify-content-center align-items-center bg-light shadow-sm" method="GET" action="{% url 'search' %}">
-            {% csrf_token %}
             <div class="input-group w-75">
                 <input type="text" class="form-control" name="name" placeholder="Event Name" aria-label="Event Name">
-                <input type="text" class="form-control" name="genre" placeholder="Genre" aria-label="Genre">
+                {% comment %} <input type="text" class="form-control" name="genre" placeholder="Genre" aria-label="Genre"> {% endcomment %}
                 <div class="input-group-append">
                   <select class="form-select" id="genre" name="genre">
                       <option value="" selected disabled>Select Genre</option>
@@ -187,51 +186,16 @@
                   </script>
 
                 <div class="swiper-wrapper">
-
-                  <!-- Note: Could run the following code in a template loop -->
-                  <div class="swiper-slide"
-                    style="background-image: url('{% static 'assets/img/post-slide-1.jpg' %}');">
-                    <div class="content">
-                      <h2><a href="single-post.html">The Best Homemade Masks for Face (keep the Pimples Away)</a></h2>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem neque est mollitia! Beatae
-                        minima assumenda repellat harum vero, officiis ipsam magnam obcaecati cumque maxime inventore
-                        repudiandae quidem necessitatibus rem atque.</p>
+                  {% for event in events_swipper %}
+                    <div class="swiper-slide"
+                      style="background-image: url('{{event.get_media.0.image.url}}');">
+                      <div class="content">
+                        <h2><a href="{% url "details" event.id %}">{{event.name}}</a></h2>
+                        <p>{{event.details|slice:":100"}}.....</p>
+                      </div>
                     </div>
+                  {% endfor %}
                   </div>
-
-                  <div class="swiper-slide"
-                    style="background-image: url('{% static 'assets/img/post-slide-2.jpg' %}');">
-                    <div class="content">
-                      <h2><a href="single-post.html">17 Pictures of Medium Length Hair in Layers That Will Inspire Your
-                          New Haircut</a></h2>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem neque est mollitia! Beatae
-                        minima assumenda repellat harum vero, officiis ipsam magnam obcaecati cumque maxime inventore
-                        repudiandae quidem necessitatibus rem atque.</p>
-                    </div>
-                  </div>
-
-                  <div class="swiper-slide"
-                    style="background-image: url('{% static 'assets/img/post-slide-3.jpg' %}');">
-                    <div class="content">
-                      <h2><a href="single-post.html">13 Amazing Poems from Shel Silverstein with Valuable Life
-                          Lessons</a></h2>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem neque est mollitia! Beatae
-                        minima assumenda repellat harum vero, officiis ipsam magnam obcaecati cumque maxime inventore
-                        repudiandae quidem necessitatibus rem atque.</p>
-                    </div>
-                  </div>
-
-                  <div class="swiper-slide"
-                    style="background-image: url('{% static 'assets/img/post-slide-4.jpg' %}');">
-                    <div class="content">
-                      <h2><a href="single-post.html">9 Half-up/half-down Hairstyles for Long and Medium Hair</a></h2>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem neque est mollitia! Beatae
-                        minima assumenda repellat harum vero, officiis ipsam magnam obcaecati cumque maxime inventore
-                        repudiandae quidem necessitatibus rem atque.</p>
-                    </div>
-                  </div>
-                </div>
-
                 <div class="swiper-button-next"></div>
                 <div class="swiper-button-prev"></div>
 
@@ -255,26 +219,21 @@
         <div class="container" data-aos="fade-up">
           <div class="row g-5">
             <div class="col-lg-4">
-
               <div class="post-entry lg">
-                <a href="blog-details.html"><img src="{% static 'assets/img/post-landscape-1.jpg' %}" alt=""
+                <a href="{% url "details" events_trending.0.id %}"><img src="{{events_trending.0.get_media.0.image.url}}" alt=""
                     class="img-fluid"></a>
-                <div class="post-meta"><span class="date">Culture</span> <span class="mx-1">•</span> <span>Jul 5th
-                    '22</span></div>
-                <h2><a href="blog-details.html">11 Work From Home Part-Time Jobs You Can Do Now</a></h2>
-                <p class="mb-4 d-block">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Vero temporibus
-                  repudiandae, inventore pariatur numquam cumque possimus exercitationem? Nihil tempore odit ab minus
-                  eveniet praesentium, similique blanditiis molestiae ut saepe perspiciatis officia nemo, eos quae
-                  cumque. Accusamus fugiat architecto rerum animi atque eveniet, quo, praesentium dignissimos</p>
+                <div class="post-meta"><span class="date">{{events_trending.0.genres.first}}</span> <span class="mx-1">•</span> 
+                  <span>{{events_trending.0.date}}</span></div>
+                <h2><a href="{% url "details" events_trending.0.id %}">{{events_trending.0.name}}</a></h2>
+                <p class="mb-4 d-block">{{events_trending.0.details|slice:":100"}}...</p>
 
-                <div class="d-flex align-items-center author">
+                {% comment %} <div class="d-flex align-items-center author">
                   <div class="photo"><img src="{% static 'assets/img/person-1.jpg' %}" alt="" class="img-fluid"></div>
                   <div class="name">
                     <h3 class="m-0 p-0">Cameron Williamson</h3>
                   </div>
-                </div>
+                </div> {% endcomment %}
               </div>
-
             </div>
 
             <div class="col-lg-8">
@@ -282,37 +241,33 @@
                 <!-- NOTE: Loopable Content-->
                 <div class="col-lg-4 border-start custom-border">
                   <div class="post-entry">
-                    <a href="blog-details.html"><img src="{% static 'assets/img/post-landscape-2.jpg' %}" alt=""
+                    <a href="{% url "details" events_trending.1.id%}"><img src="{{events_trending.1.get_media.0.image.url}}" alt=""
                         class="img-fluid"></a>
-                    <div class="post-meta"><span class="date">Sport</span> <span class="mx-1">•</span> <span>Jul 5th
-                        '22</span></div>
-                    <h2><a href="blog-details.html">Let’s Get Back to Work, New York</a></h2>
+                    <div class="post-meta"><span class="date">{{events_trending.1.genres.first}}</span> <span class="mx-1">•</span> <span>{{events_trending.1.date}}</span></div>
+                    <h2><a href="{% url "details" events_trending.1.id%}">{{events_trending.1.name}}</a></h2>
                   </div>
 
                   <div class="post-entry">
-                    <a href="blog-details.html"><img src="{% static 'assets/img/post-landscape-5.jpg' %}" alt=""
+                    <a href="{% url "details" events_trending.2.id%}"><img src="{{events_trending.2.get_media.0.image.url}}" alt=""
                         class="img-fluid"></a>
-                    <div class="post-meta"><span class="date">Food</span> <span class="mx-1">•</span> <span>Jul 17th
-                        '22</span></div>
-                    <h2><a href="blog-details.html">How to Avoid Distraction and Stay Focused During Video Calls?</a>
-                    </h2>
+                    <div class="post-meta"><span class="date">{{events_trending.2.genres.first}}</span> <span class="mx-1">•</span> <span>{{events_trending.2.date}}</span></div>
+                    <h2><a href="{% url "details" events_trending.2.id%}">{{events_trending.2.name}}</a></h2>
                   </div>
+
                 </div>
                 
                 <div class="col-lg-4 border-start custom-border">
                   <div class="post-entry">
-                    <a href="blog-details.html"><img src="{% static 'assets/img/post-landscape-3.jpg' %}" alt=""
+                    <a href="{% url "details" events_trending.3.id%}"><img src="{{events_trending.3.get_media.0.image.url}}" alt=""
                         class="img-fluid"></a>
-                    <div class="post-meta"><span class="date">Business</span> <span class="mx-1">•</span> <span>Jul 5th
-                        '22</span></div>
-                    <h2><a href="blog-details.html">6 Easy Steps To Create Your Own Cute Merch For Instagram</a></h2>
+                    <div class="post-meta"><span class="date">{{events_trending.3.genres.first}}</span> <span class="mx-1">•</span> <span>{{events_trending.3.date}}</span></div>
+                    <h2><a href="{% url "details" events_trending.3.id%}">{{events_trending.3.name}}</a></h2>
                   </div>
                   <div class="post-entry">
-                    <a href="blog-details.html"><img src="{% static 'assets/img/post-landscape-6.jpg' %}" alt=""
+                    <a href="{% url "details" events_trending.4.id%}"><img src="{{events_trending.4.get_media.0.image.url}}" alt=""
                         class="img-fluid"></a>
-                    <div class="post-meta"><span class="date">Tech</span> <span class="mx-1">•</span> <span>Mar 1st
-                        '22</span></div>
-                    <h2><a href="blog-details.html">10 Life-Changing Hacks Every Working Mom Should Know</a></h2>
+                    <div class="post-meta"><span class="date">{{events_trending.4.genres.first}}</span> <span class="mx-1">•</span> <span>{{events_trending.4.date}}</span></div>
+                    <h2><a href="{% url "details" events_trending.4.id%}">{{events_trending.4.name}}</a></h2>
                   </div>
                 </div>
 
@@ -339,7 +294,80 @@
 
     </section><!-- /Trending Category Section -->
 
+    <!-- Random Genre Section Start-->
+    <section id="culture-category" class="culture-category section"> 
 
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <div class="section-title-container d-flex align-items-center justify-content-between">
+          <h2>Check out these {{random_genre}} events!</h2>
+          <p><a href="{% url "get_genre" random_genre %}">See All {{random_genre}} events</a></p>
+        </div>
+      </div><!-- End Section Title -->
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row">
+          <div class="col-md-9">
+
+            <div class="d-lg-flex post-entry">
+              <a href="{% url "details" events_section.0.id %}" class="me-4 thumbnail mb-4 mb-lg-0 d-inline-block">
+                <img src="{{events_section.0.get_media.0.image.url}}" alt="" class="img-fluid">
+              </a>
+              <div>
+                <div class="post-meta">
+                  <span class="date">{{events_section.0.genres.first}}</span> <span class="mx-1">•</span> <span>{{events_section.0.date}}</span>
+                </div>
+                <h3><a href="{% url "details" events_section.0.id %}">{{events_section.0.name}}</a></h3>
+                <p>{{events_section.0.details|slice:":200"}}.....</p>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-4">
+                <div class="post-list border-bottom">
+                  <a href="{% url "details" events_section.2.id %}"><img src="{{events_section.2.get_media.0.image.url}}" alt="" class="img-fluid"></a>
+                  <div class="post-meta">
+                    <span class="date">{{events_section.2.genres.first}}</span> <span class="mx-1">•</span> <span>{{events_section.2.date}}</span>
+                  </div>
+                  <h2 class="mb-2"><a href="{% url "details" events_section.2.id %}">{{events_section.2.name}}</a></h2>
+                  <p>{{events_section.2.details|slice:":100"}}.....</p>
+                </div>
+
+                <div class="post-list">
+                  <div class="post-meta">
+                    <span class="date">{{events_section.3.genres.first}}</span> <span class="mx-1">•</span> <span>{{events_section.3.date}}</span>
+                  </div>
+                  <h2 class="mb-2"><a href="{% url "details" events_section.3.id%}">{{events_section.3.name}}</a></h2>
+                </div>
+              </div>
+              <div class="col-lg-8">
+                <div class="post-list">
+                  <a href="{% url "details" events_section.1.id %}"><img src="{{events_section.1.get_media.0.image.url}}" alt="" class="img-fluid"></a>
+                  <div class="post-meta">
+                    <span class="date">{{events_section.1.genres.first}}</span> <span class="mx-1">•</span> <span>{{events_section.1.date}}</span>
+                  </div>
+                  <h2 class="mb-2"><a href="{% url "details" events_section.1.id %}">{{events_section.1.name}}</a></h2>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            {% for event in events_section %}
+            {% if forloop.counter > 3 and forloop.counter < 13 %}
+            <div class="post-list border-bottom">
+              <div class="post-meta"><span class="date">{{event.genres.first}}</span> <span class="mx-1">•</span> <span>{{event.date}}</span></div>
+              <h2 class="mb-2"><a href="{% url "details" event.id %}">{{event.name}}</a></h2>
+            </div>
+            {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+
+      </div>
+
+    </section> <!--Genre Section End-->
 
     </section><!-- /Starter Section Section -->
     {% endblock content %}

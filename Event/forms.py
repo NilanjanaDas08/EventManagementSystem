@@ -1,13 +1,14 @@
 from django import forms
 # from django.forms import modelformset_factory 
 from .models import Event,EventMedia
+from django.utils import timezone
 
 class EventForm(forms.ModelForm):
     class Meta:
         model=Event
         fields=['name','date','details','genres','start_time','end_time','venue_id','price']
         widgets = {
-            'date': forms.DateInput(attrs={'type': 'date'}),  # HTML5 date input
+            'date': forms.DateInput(attrs={'type': 'date', 'min': timezone.now().date().strftime("%Y-%m-%d")}),  # HTML5 date input
             'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),  # HTML5 datetime-local input
             'end_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         }
