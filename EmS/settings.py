@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -135,3 +136,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 MEDIA_URL = "/media/"
 
 LOGIN_REDIRECT_URL = '/'
+
+#Load environment files from .env file
+load_dotenv()
+PAYPAL_CLIENT_ID=os.getenv('PAYPAL_CLIENT_ID')
+PAYPAL_CLIENT_SECRET=os.getenv('PAYPAL_CLIENT_SECRET')
+PAYPAL_MODE=os.getenv('PAYPAL_MODE','sandbox')
+

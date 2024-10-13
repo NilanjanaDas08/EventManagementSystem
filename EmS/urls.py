@@ -24,6 +24,7 @@ urlpatterns = [
     path('',include('Authentication.urls')),
     path('',include('Event.urls')),
     path('',include('Booking.urls')),
+    path('',include('Payment.urls')),
     #path('accounts', )
     #path('profile',views.profile,name="profile")
 ]
