@@ -48,7 +48,8 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     # messages.success(request, "You have been logged out")
-    return redirect('home')
+    # return redirect('home')
+    return redirect(request.GET.get('next','/'))
 
 ''''# Profile view (example)
 @login_required

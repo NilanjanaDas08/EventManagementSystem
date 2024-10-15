@@ -15,6 +15,6 @@ class Booking(models.Model):
      updated_at=models.DateTimeField(auto_now=True)
 
      def __str__(self):
-        return (f"Booking by {self.user_id.first_name} {self.user_id.last_name} "
+        return (f"Booking by {self.user_id.username} "
                 f"for {self.event_id.name} - {self.no_of_seats_booked} seats "
                 f"paid using {self.paid_using.name} on {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}")

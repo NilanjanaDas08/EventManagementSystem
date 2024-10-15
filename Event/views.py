@@ -99,7 +99,7 @@ def details(request, event_id):
     config['event'] = Event.objects.get(id = event_id)
     config['related_events'] = Event.objects.filter(genres__name = config['event'].genres.first()).exclude(id = event_id) # Need to limit this
 
-    config['signed_ub'] = request.user.get_username()
+    config['signed_in'] = request.user.get_username()
     config['genres'] = Genre.objects.all()
 
     return render(request, 'details.html', config)

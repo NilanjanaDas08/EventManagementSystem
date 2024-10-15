@@ -1,41 +1,126 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Ticket</title>
-</head>
-<body>
+{% extends "Home.html" %}
 
-<div class="container">
-    <h1>Book Ticket for {{ event.title }}</h1>
-    <p>Date: {{ event.date }}</p>
-    <p>Price per seat: ${{ event.price }}</p>
+{% block title %}Book Tickets{% endblock %}
 
-    <form method="POST">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="no_of_seats_booked">Number of Seats:</label>
-            <input type="number" name="no_of_seats_booked" id="no_of_seats_booked" min="1" required>
+{% block section-title %}Book your tickets!{% endblock %}
+
+{% block content %}
+      <div class="container mb-5 mt-3">
+        <div class="container">
+  
+          <div class="row">
+            <div class="col-xl-8">
+              <ul class="list-unstyled">
+                <li class="text-muted">To: <span style="color:#5d9fc5 ;">{{signed_in}}</span></li>
+                <li class="text-muted"><strong>Venue:</strong> {{venue.name}}</li>
+                <li class="text-muted"><strong>Address:</strong> {{venue.location}}</li>
+                <li class="text-muted"><strong>Available Seats:</strong> {{venue.no_of_seats}}</li>
+                <li></li>
+              </ul>
+            </div>
+            <div class="col-xl-4">
+              <p class="text-muted">Invoice</p>
+              <ul class="list-unstyled">
+                <li class="text-muted"><i class="fas fa-circle" style="color:#84B0CA ;"></i> <span
+                    class="fw-bold">ID: </span>{{booking_id}}</li>
+                <li class="text-muted"><i class="fas fa-circle" style="color:#84B0CA ;"></i> <span
+                    class="fw-bold">Creation Date: </span>{{time}}</li>
+              </ul>
+            </div>
+          </div>
+  
+          <div class="row my-2 mx-1 justify-content-center">
+            <table class="table table-striped table-borderless">
+              <thead style="background-color:#84B0CA ;" class="text-white">
+                <tr>
+                  <th scope="col">Description</th>
+                  <th scope="col">Qty</th>
+                  <th scope="col">Unit Price</th>
+                  <th scope="col">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><a href="{% url "details" event.id %}">{{event.name}}</a></td>
+                  <td>
+                    <input type="number" name="no_of_seats_booked" id="no_of_seats_booked" min="1" value="1" required> <!-- There should be a max -->
+                  </td>
+                  <td>$ {{event.price}}</td>
+                  <td id="amount">{{event.price}}</td> <!-- The amount will be updated dynamically -->
+                </tr>
+              </tbody>
+            </table>
+          </div>
+  
+          <div class="row">
+            <div class="col-xl-8">
+              <img src="{{event.get_media.0.image.url}}" alt="{{event.name}}" style="max-width: 20%; height: auto;">
+            </div>
+            <div class="col-xl-3">
+              <ul class="list-unstyled">
+                <li class="text-muted ms-3"><span class="text-black me-4">SubTotal</span>$ <span id="subtotal">{{event.price}}</span></li>
+                <li class="text-muted ms-3 mt-2"><span class="text-black me-4">Tax(15%)</span>$ <span id="tax">{{event.price}}</span></li>
+              </ul>
+              <p class="text-black float-start"><span class="text-black me-3">Total Amount</span><span
+                  style="font-size: 25px;" id="total_amount">{{event.price}}</span></p>
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-xl-10">
+              <p>Thank you for your purchase</p>
+            </div>
+            <div class="col-xl-2">
+              <form method = "POST" action="{% url "book_ticket" event.id%}">
+                    {% csrf_token %}
+                    <input type="hidden" name="no_of_seats_booked" id="hidden_no_of_seats" value="1">
+                    <input type="hidden" name="total_price" id="hidden_total_price" value="{{event.price}}">
+                    <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary text-capitalize">Pay Now</button>
+                </form>
+            </div>
+          </div>
+  
         </div>
+      </div>
 
-        <div class="form-group">
-            <label for="payment_method">Select Payment Method:</label>
-            <select name="payment_method" id="payment_method" required>
-                <option value="">--Select Payment Method--</option>
-                {% for method in payment_methods %}
-                    <option value="{{ method.id }}">{{ method.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
+      <!-- JavaScript for dynamic price calculation -->
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const quantityInput = document.getElementById('no_of_seats_booked');
+          const amountDisplay = document.getElementById('amount');
+          const subtotalDisplay = document.getElementById('subtotal');
+          const taxDisplay = document.getElementById('tax');
+          const totalAmountDisplay = document.getElementById('total_amount');
+          const paymentMethodSelect = document.getElementById('payment_method');
+          const hiddenNoOfSeats = document.getElementById('hidden_no_of_seats');
+          const hiddenTotalPrice = document.getElementById('hidden_total_price');
+          const unitPrice = {{ event.price }};
+          
+          // Function to update the total price and amount
+          function updatePrice() {
+            const quantity = parseInt(quantityInput.value);
+            const amount = (quantity * unitPrice).toFixed(2); // Round to 2 decimal places
+            const subtotal = parseFloat(amount);
+            const tax = (subtotal * 0.15).toFixed(2); // Calculate 15% tax and round
+            const totalAmount = (subtotal + parseFloat(tax)).toFixed(2); // Add subtotal and tax and round
+      
+            // Update the amount, subtotal, tax, and total amount on the page
+            amountDisplay.textContent = `$ ${amount}`;
+            subtotalDisplay.textContent = `${subtotal.toFixed(2)}`;
+            taxDisplay.textContent = `${tax}`;
+            totalAmountDisplay.textContent = `$ ${totalAmount}`;
 
-        <button type="submit">Book Now</button>
-    </form>
+            // Update hidden seats
+            hidden_no_of_seats.value = quantity;
+            hidden_total_price.value = totalAmount;
+          }
+      
+          // Listen for changes in the quantity input
+          quantityInput.addEventListener('input', updatePrice);
 
-    <div class="back-link">
-        <a href="{% url 'details' event.id %}">Back to Event Details</a>
-    </div>
-</div>
+          // Initial update on page load
+          updatePrice();
+        });
+    </script>
 
-</body>
-</html>
+{% endblock %}

@@ -17,6 +17,8 @@ from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+#Load environment files from .env file
+load_dotenv("./.env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -27,8 +29,10 @@ SECRET_KEY = 'django-insecure-p+ztt_+h^$l*+^mdrqeasy%!@8$ob0sg2nwv8_95jvm_k^zw2t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+# For running server on ngrok, remember to setup url_code in .env without http
+ngrok_url = os.getenv('NGROK_URL_CODE', 'http://localhost:8000')
+ALLOWED_HOSTS = [ngrok_url,'localhost','127.0.0.1']
+CSRF_TRUSTED_ORIGINS = [f"https://{ngrok_url}"]
 
 # Application definition
 
@@ -43,6 +47,7 @@ INSTALLED_APPS = [
     'Event',
     'Booking',
     'Payment',
+    'paypal.standard.ipn',
 ]
 
 MIDDLEWARE = [
@@ -137,9 +142,8 @@ MEDIA_URL = "/media/"
 
 LOGIN_REDIRECT_URL = '/'
 
-#Load environment files from .env file
-load_dotenv()
-PAYPAL_CLIENT_ID=os.getenv('PAYPAL_CLIENT_ID')
-PAYPAL_CLIENT_SECRET=os.getenv('PAYPAL_CLIENT_SECRET')
-PAYPAL_MODE=os.getenv('PAYPAL_MODE','sandbox')
+PAYPAL_RECEIVER_EMAIL = os.getenv('PAYPAL_RECEIVER_EMAIL')
+PAYPAL_TEST = os.getenv('PAYPAL_TEST')
+PAYPAL_PDT_TOKEN = os.getenv('PAYPAL_PDT_TOKEN')
+# PAYPAL_MODE=os.getenv('PAYPAL_MODE','sandbox')
 

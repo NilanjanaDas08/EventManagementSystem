@@ -25,6 +25,7 @@ urlpatterns = [
     path('',include('Event.urls')),
     path('',include('Booking.urls')),
     path('',include('Payment.urls')),
+    path('',include('paypal.standard.ipn.urls')),
     #path('accounts', )
     #path('profile',views.profile,name="profile")
 ]

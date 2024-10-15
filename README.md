@@ -28,6 +28,8 @@ Please refer to given workbench file
 ### Technologies Used
 
 Django Framework
+PayPal for Payments
+Ngrok
 
 ## Instructions
 
