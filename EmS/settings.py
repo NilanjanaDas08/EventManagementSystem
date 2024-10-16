@@ -145,5 +145,6 @@ LOGIN_REDIRECT_URL = '/'
 PAYPAL_RECEIVER_EMAIL = os.getenv('PAYPAL_RECEIVER_EMAIL')
 PAYPAL_TEST = os.getenv('PAYPAL_TEST')
 PAYPAL_PDT_TOKEN = os.getenv('PAYPAL_PDT_TOKEN')
+PAYPAL_BUY_BUTTON_IMAGE = "https://www.paypalobjects.com/webstatic/en_AU/i/buttons/btn_paywith_primary_l.png"
 # PAYPAL_MODE=os.getenv('PAYPAL_MODE','sandbox')
 

@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.http import HttpResponse
@@ -84,11 +85,16 @@ import requests
 #     def get(self, request):
 #         return Response({'message': 'Payment canceled by the user'}, status=status.HTTP_200_OK)  
 
+@login_required(login_url="login")
 def select_payment_gateway(request,event_id):
+    if 'no_of_seats_booked' not in request.session or 'total_price' not in request.session:
+        return redirect(reverse('book_ticket', kwargs={'event_id':event_id}))
+
     context = {
         'event':Event.objects.get(id=event_id),
-        'no_of_seats_booked':request.session.get('no_of_seats_booked'),
-        'total_price':float(request.session.get('total_price')),
+        'no_of_seats_booked':request.session.pop('no_of_seats_booked',None),
+        'total_price':float(request.session.pop('total_price',None)),
+        'payment_methods': PaymentMethods.objects.all(),
     }
 
     # Setting up PayPal payment (best if following setup as utils function)
@@ -99,7 +105,7 @@ def select_payment_gateway(request,event_id):
         'amount': context['total_price'],
         'item_name': context['event'].name,
         'invoice': uuid.uuid4(), # Generates a random uuid for invoice
-        'custom': str(request.user.id),
+        'custom': f"{request.user.id}|{context['no_of_seats_booked']}",
         'currency_code': "USD",
         'notify_url': f"http://{host}{reverse('paypal-ipn')}", # We send all paypal configuration data to this url, paypal library handles the rest
         'return_url': f"http://{host}{reverse('payment_return', kwargs={'event_id': event_id})}", # Redirects to this url on success
@@ -107,41 +113,42 @@ def select_payment_gateway(request,event_id):
     }
 
     # Initializing PayPalPaymentsForm
-    paypal_form = context['paypal'] = PayPalPaymentsForm(initial = paypal_config)
+    context['paypal'] = PayPalPaymentsForm(initial = paypal_config)
 
     return render(request,"payment_gateway_select.html",context)
 
 @csrf_exempt
 def payment_return(request, event_id):
+    """Verifies Payment to Paypal and redirects to Booking Confirmation Page on Success"""
+
     # Get the 'PDT' token from PayPal
     pdt_token = request.GET.get('tx')  # This is the 'tx' parameter PayPal sends
 
     if not pdt_token:
         return HttpResponse("Payment failed", status=400)
 
-    print("Extracted PDT Token: ",pdt_token)
-    print("Actual PDT Token:", settings.PAYPAL_PDT_TOKEN)
-
     # Verify the PDT token with PayPal
     verify_response = verify_pdt(pdt_token)
-    print("Verified Resoponse: ",verify_response)
 
-    if verify_response.get("payment_status") == "Completed":
+    if verify_response.get('receiver_email') == settings.PAYPAL_RECEIVER_EMAIL.replace("@","%40",1) and \
+        verify_response.get("payment_status") == "Completed": 
+
         # Payment is verified, process it
         event = Event.objects.get(id=event_id)
-        user = User.objects.get(id = int(request.GET.get('custom')))
+        user = User.objects.get(id = int(request.GET.get('custom').split("|")[0]))
+        no_of_seats_booked = request.GET.get('custom').split("|")[1]
         booking = Booking.objects.create(
-            user_id=user,
-            event_id=event,
-            no_of_seats_booked=request.session.get('no_of_seats_booked'),
-            payment=verify_response.get('mc_gross'),
-            paid_using=PaymentMethods.objects.get(name="PayPal")  # Dynamic payment method
+            user_id = user,
+            event_id = event,
+            no_of_seats_booked = no_of_seats_booked,
+            payment = verify_response.get('mc_gross'),
+            paid_using = PaymentMethods.objects.get(name="PayPal")  # Dynamic payment method
             # Shiould add a field for the generated invoice id
         )
         return redirect(reverse('booking_confirm', kwargs={'booking_id': booking.id}))
-    else:
-        # Payment not completed or failed
-        return redirect(reverse('payment_failure', kwargs={'event_id': event_id}))
+    
+    # Payment not completed or failed
+    return redirect(reverse('payment_failure', kwargs={'event_id': event_id}))
 
 def verify_pdt(pdt_token):
     """Verify the PDT token with PayPal."""
@@ -150,23 +157,19 @@ def verify_pdt(pdt_token):
         'tx': pdt_token,
         'at': settings.PAYPAL_PDT_TOKEN  # This is the PDT token from your PayPal account
     }
-    print("Generated Payload: ",payload)
-    response = requests.post('https://www.sandbox.paypal.com/cgi-bin/webscr', data=payload)
+    response = requests.post('https://www.sandbox.paypal.com/cgi-bin/webscr', data=payload) #Should remove sandbox for live testing
 
     # Log the full response text and status code for further inspection
-    print("PayPal Response Status Code:", response.status_code)
     response_text = response.text
-    print("PayPal PDT Response:", response_text)
-    
+
     # Parse the response, PayPal returns "SUCCESS" or "FAIL" followed by the transaction details
-    response_data = response.text.split('\n')
-    print("Response Data",response_data)
+    response_data = response_text.split('\n')
 
     if response_data[0] == 'SUCCESS':
         pdt_info = dict(line.split('=') for line in response_data[1:] if '=' in line)
         return pdt_info
-    else:
-        return None
+    
+    return None
 
 def payment_failure(request,event_id):
     event = Event.objects.get(id=event_id)

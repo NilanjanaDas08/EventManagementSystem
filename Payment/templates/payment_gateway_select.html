@@ -1,16 +1,363 @@
+
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Gateway</title>
+    <title>Tickx - Payment Gateway</title>
+
+    <style>
+        /* Stretch the sidebar to full height */
+        .sidebar {
+            height: 100vh; /* Full viewport height */
+            position: fixed; /* Fixed position */
+            top: 0;
+            left: 0;
+            width: 280px;
+            background-color: #f8f9fa; /* Sidebar background color */
+            padding-top: 20px;
+            border-right: 2px solid #e0e0e0; /* Add a right border for better separation */
+        }
+
+        /* Sidebar link styles */
+        .sidebar .nav-link {
+            color: #000; /* Text color */
+            padding: 12px 20px;
+            border-radius: 5px; /* Slightly rounded links */
+            margin-bottom: 10px;
+        }
+
+        .sidebar .nav-link.active {
+            background-color: #007bff; /* Active link background color */
+            color: #fff; /* Active link text color */
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: #ddd; /* Hover effect */
+        }
+
+        /* Content area */
+        .content {
+            margin-left: 300px;
+            padding: 40px 20px;
+        }
+
+        /* Opening text */
+        .opening-text {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* Style the sections */
+        .section {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .active-section {
+            display: block;
+        }
+
+        /* Payment method card style */
+        .payment-method-card {
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            margin: 15px 0;
+            transition: transform 0.2s;
+        }
+
+        .payment-method-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .payment-method-card i {
+            font-size: 40px;
+            margin-right: 10px;
+        }
+
+        .payment-method-card p {
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        /* Payment method icon styles */
+        .payment-method-card .icon {
+            font-size: 45px;
+            color: #007bff;
+        }
+
+        .payment-method-card .details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        /* Button styling */
+        .btn-proceed {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-proceed:hover {
+            background-color: #218838;
+        }
+
+        .cancel-link {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        /* Opening Text Styling */
+        .opening-text {
+          margin-bottom: 30px;
+          font-size: 1.25rem;
+          font-weight: 500;
+          color: #333;
+        }
+      
+        .opening-text p {
+          margin-bottom: 10px;
+        }
+      
+        .opening-text strong {
+          color: #007bff;
+          font-size: 1.2rem;
+        }
+      
+        .opening-text em {
+          color: #888;
+        }
+      
+        /* Event Details Styling */
+        .event-details {
+          background-color: #f9f9f9;
+          padding: 20px;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          margin-bottom: 30px;
+        }
+      
+        .event-detail-item {
+          display: flex;
+          justify-content: space-between;
+          padding: 12px 0;
+          border-bottom: 1px solid #ddd;
+        }
+      
+        .event-detail-item h5 {
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: #555;
+          margin-bottom: 0;
+        }
+      
+        .event-detail-item p {
+          margin: 0;
+          color: #333;
+          font-size: 1rem;
+        }
+      
+        .event-detail-item:last-child {
+          border-bottom: none;
+        }
+      
+        /* Total Price Styling */
+        .total-price {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #28a745;
+        }
+      
+        /* Styling for the "Note" text */
+        .note {
+          font-size: 0.95rem;
+          color: #888;
+        }
+
+    </style>
+
+    <!-- Favicons -->
+    <link href="{% static 'assets/img/favicon.png' %}" rel="icon">
+    <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/aos/aos.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+    <!-- Main CSS File -->
+    <link href="{% static 'assets/css/main.css' %}" rel="stylesheet">
+
 </head>
+
 <body>
 
-<h2>Payment Gateway</h2>
-<p>Your total is: Rs. {{ total_price }}</p>
+  <!-- Sidebar -->
+  <div class="d-flex flex-column p-3 text-white bg-dark sidebar" style="width: 280px;">
+    <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-white text-decoration-none">
+      <img src="{% static 'assets/img/logo.png' %}" alt="" style="max-width: 25%; height: auto; padding-right: 10px;">
+      <span class="fs-4">Tickx</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto" id="sidebarLinks">
+      {% for method in payment_methods %}
+      <li class="nav-item">
+        <a href="#" class="nav-link text-white {% if method.name == "PayPal" %}active{% endif %}" aria-current="page" data-section="{{method.name}}-section">
+          {% if method.name == "PayPal" %}
+          <i class="bi bi-paypal"></i>
+          {% elif method.name == "Credit Card"%}
+          <i class="bi bi-credit-card"></i>
+          {% elif method.name == "Debit Card"%}
+          <i class="bi bi-credit-card-2-front"></i>
+          {% elif method.name == "Net Banking"%}
+          <i class="bi bi-bank"></i>
+          {% elif method.name == "Google Pay"%}
+          <i class="bi bi-google"></i>
+          {% else %}
+          <i class="bi bi-wallet"></i>
+          {% endif %}
+          {{method.name}}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
 
-<!-- PayPal Button -->
-{{paypal.render}}
+  <!-- Main Content Area -->
+  <div class="content">
+    
+    <!-- Opening Text -->
+    <div class="opening-text">
+      <p>Choose your preferred payment method to complete your transaction for the event: <strong>{{ event.name }}</strong>.</p>
+      <p><em>Please note that only PayPal works at the moment.</em></p>
+    </div>
+
+    <!-- Event Details Section -->
+    <div class="event-details">
+      <div class="event-detail-item">
+        <h5>Event:</h5>
+        <p><strong>{{ event.name }}</strong></p>
+      </div>
+
+      <div class="event-detail-item">
+        <h5>Venue:</h5>
+        <p>{{ event.venue_id.name }}, {{ event.venue_id.location }}</p>
+      </div>
+
+      <div class="event-detail-item">
+        <h5>Timing:</h5>
+        <p>{{ event.start_time }} - {{ event.end_time }}</p>
+      </div>
+
+      <div class="event-detail-item">
+        <h5>Number of Seats Booked:</h5>
+        <p>{{ no_of_seats_booked }}</p>
+      </div>
+
+      <div class="event-detail-item">
+        <h5>Total Price:</h5>
+        <p class="total-price">$ {{ total_price }}</p>
+      </div>
+    </div>
+
+
+    {% for method in payment_methods %}
+    <div id="{{method.name}}-section" class="section">
+      <div class="payment-method-card">
+        
+        <!-- Really should fix this -->
+        <div class="d-flex align-items-center">
+          {% if method.name == "PayPal" %}
+          <i class="bi bi-paypal"></i>
+          {% elif method.name == "Credit Card"%}
+          <i class="bi bi-credit-card"></i>
+          {% elif method.name == "Debit Card"%}
+          <i class="bi bi-credit-card-2-front"></i>
+          {% elif method.name == "Net Banking"%}
+          <i class="bi bi-bank"></i>
+          {% elif method.name == "Google Pay"%}
+          <i class="bi bi-google"></i>
+          {% else %}
+          <i class="bi bi-wallet"></i>
+          {% endif %}
+          <h3>Pay with {{method.name}}</h3>
+        </div>
+
+        <!-- Payment method action -->
+        {% if method.name == "PayPal" %}
+        <div class="details">
+          {{paypal.render}}
+        </div>
+        {% else %}
+        <p>This method is not available yet.</p>
+        {% endif %}
+        <a href="{% url 'details' event.id %}" class="cancel-link">Cancel and Return to Details Page</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/php-email-form/validate.js' %}"></script>
+  <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
+  <script src="{% static 'assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
+
+  <!-- Main JS File -->
+  <script src="{% static 'assets/js/main.js' %}"></script>
+
+  <!-- Custom JavaScript for dynamic content -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const links = document.querySelectorAll(".nav-link");
+      const sections = document.querySelectorAll(".section");
+  
+      // Function to activate the clicked section
+      function activateSection(link) {
+        // Deactivate all links and hide all sections
+        links.forEach(link => link.classList.remove("active"));
+        sections.forEach(section => section.classList.remove("active-section"));
+        
+        // Activate clicked link and show the corresponding section
+        link.classList.add("active");
+        const sectionId = link.getAttribute("data-section");
+        document.getElementById(sectionId).classList.add("active-section");
+      }
+  
+      // Set PayPal as the default active section
+      const paypalLink = document.querySelector('.nav-link[data-section="PayPal-section"]');
+      if (paypalLink) {
+        activateSection(paypalLink);
+      }
+  
+      // Add click event listeners to all links
+      links.forEach(link => {
+        link.addEventListener("click", function(e) {
+          e.preventDefault();
+          activateSection(this);
+        });
+      });
+    });
+  </script>
+
 </body>
 </html>
