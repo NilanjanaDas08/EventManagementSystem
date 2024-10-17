@@ -7,6 +7,8 @@ from Event.models import Genre
 
 # Registration view
 # NOTE: Need to account for other additional fields
+# NOTE: Need to render errors properly
+
 def register(request):
     config = {}
     config['genres'] = Genre.objects.all()
@@ -29,19 +31,20 @@ def login_view(request):
     config = {}
     config['genres'] = Genre.objects.all()
     if request.method == 'POST':
-        username = request.POST['username']
+        email = request.POST['email']
         password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
+
+        user = authenticate(request, email=email, password=password)
         if user is not None:
             login(request, user)
-            messages.success(request,f'Welcome,{username}!')
+            messages.success(request,f'Welcome,{email}!')
             
             next_url = request.GET.get('next','/')
             if next_url: return redirect(next_url);
             # return redirect('home')  # Fixed redirect to work properly
         else:
             messages.error(request, "Invalid credentials")
-            config['error'] = "You have entered wrong username and/or password."
+            config['error'] = "You have entered wrong email and/or password."
     return render(request, 'registration/login.html',config)
 
 # Logout view

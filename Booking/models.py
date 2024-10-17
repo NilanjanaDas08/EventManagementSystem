@@ -13,6 +13,7 @@ class Booking(models.Model):
      paid_using=models.ForeignKey(PaymentMethods,on_delete=models.CASCADE)
      created_at=models.DateTimeField(auto_now=True)
      updated_at=models.DateTimeField(auto_now=True)
+     invoice_id = models.UUIDField(null=True)
 
      def __str__(self):
         return (f"Booking by {self.user_id.username} "

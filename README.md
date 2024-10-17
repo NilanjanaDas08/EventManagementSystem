@@ -27,21 +27,25 @@ Please refer to given workbench file
 
 ### Technologies Used
 
-Django Framework
-PayPal for Payments
-Ngrok
+- Django Framework
+- PayPal for Payments
+- Ngrok
+- Mailtrap for FakeSmtp Server
 
 ## Instructions
 
 1. Dowload the event_management_system directory
-2. You need a virtual environment to install and use Django.
-    - First, go to the command line and make sure you are in the same directory as the downloaded directory.
-    - Then enter the following command: <code>python -m venv venv</code>
-    - Then, to activate, type the following command: 
-        + For Linux: <code>source venv/bin/activate</code>
-        + For Windows: <code>venv/Scripts/activate</code>
-            - Note: If an error occurs, you may need to run the command <code>Set-ExecutionPolicy Unrestriced -Scope Process</code>
-    - Then, install Django using the command: <code>python -m pip install Django</code>
+2. You need a virtual environment to install and use Django and other packages. All required packages are provided in the install scripts.
+    - If you do not have venv installed, use the command <code> pip install virtualenv </code> 
+    - For Linux
+        - You may need to run the command <code> chmod +x ./install.sh</code>
+        - Then, simply run <code>./install.sh</code> and wait for the packages to install
+        - To activate venv, run the command <code>source venv/bin/activate</code>. Make sure you are in the same directory as the new venv path
+    - For windows
+        - You may need to run the command <code>Set-ExecutionPolicy Unrestricted -Scope Process</code> to run scripts
+        - Then, simply run <code>install.bat</code> and wait for the packages to install
+        - To activate venv, run the command <code>venv\Scripts\activate</code>. Make sure you are in the same directory as the new venv path
 3. Go into the event_management_system directory from the command line.
-4. Run the command to make initial migration to enable Django features: <code>python manage.py migrate</code>    
-5. Run the server using the command <code>python manage.py runserver</code>, and access it via the link [127.0.0.1:8000](127.0.0.1:8000)
+4. Remove .example from provided .env file and setup valid credentials 
+5. Run the command to make initial migration to enable Django features: <code>python manage.py migrate</code>    
+6. Run the server using the command <code>python manage.py runserver</code>, and access it via the link [127.0.0.1:8000](127.0.0.1:8000)

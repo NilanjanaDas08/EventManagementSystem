@@ -97,7 +97,7 @@ def get_genre(request, genre_name):
 def details(request, event_id):
     config = {}
     config['event'] = Event.objects.get(id = event_id)
-    config['related_events'] = Event.objects.filter(genres__name = config['event'].genres.first()).exclude(id = event_id) # Need to limit this
+    config['related_events'] = Event.objects.filter(genres__name = config['event'].genres.first()).exclude(id = event_id)[:3] # Need to limit this
 
     config['signed_in'] = request.user.get_username()
     config['genres'] = Genre.objects.all()

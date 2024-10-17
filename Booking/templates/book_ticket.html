@@ -19,10 +19,11 @@
               </ul>
             </div>
             <div class="col-xl-4">
-              <p class="text-muted">Invoice</p>
               <ul class="list-unstyled">
                 <li class="text-muted"><i class="fas fa-circle" style="color:#84B0CA ;"></i> <span
-                    class="fw-bold">ID: </span>{{booking_id}}</li>
+                  class="fw-bold">Event Date: </span>{{event.date}}</li>
+                <li class="text-muted"><i class="fas fa-circle" style="color:#84B0CA ;"></i> <span
+                    class="fw-bold">Timing: </span>{{event.start_time|date:"h:i A"}} to {{event.end_time|date:"h:i A"}}</li>
                 <li class="text-muted"><i class="fas fa-circle" style="color:#84B0CA ;"></i> <span
                     class="fw-bold">Creation Date: </span>{{time}}</li>
               </ul>

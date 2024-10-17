@@ -91,6 +91,12 @@ DATABASES = {
     }
 }
 
+# Authentication Backends
+
+AUTHENTICATION_BACKENDS = [
+    "Authentication.backends.EmailBackend",
+    "django.contrib.auth.backends.ModelBackend"
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -127,7 +133,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR/"static",]
+STATIC_ROOT = BASE_DIR/'staticfiles'
+STATICFILES_DIRS = [os.path.join(BASE_DIR,"static"),]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -142,9 +149,19 @@ MEDIA_URL = "/media/"
 
 LOGIN_REDIRECT_URL = '/'
 
+# Paypal Settings
 PAYPAL_RECEIVER_EMAIL = os.getenv('PAYPAL_RECEIVER_EMAIL')
 PAYPAL_TEST = os.getenv('PAYPAL_TEST')
 PAYPAL_PDT_TOKEN = os.getenv('PAYPAL_PDT_TOKEN')
 PAYPAL_BUY_BUTTON_IMAGE = "https://www.paypalobjects.com/webstatic/en_AU/i/buttons/btn_paywith_primary_l.png"
 # PAYPAL_MODE=os.getenv('PAYPAL_MODE','sandbox')
 
+# Email Settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False 
+DEFAULT_FROM_EMAIL = "no-reply@tickx.com"

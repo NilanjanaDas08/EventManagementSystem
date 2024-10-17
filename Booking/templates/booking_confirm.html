@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+{% extends "Home.html" %}
+{% comment %} <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,7 +17,7 @@
     <p>Number of Seats Booked: {{ booking.no_of_seats_booked }}</p>
     <p>Total Payment: ${{ booking.payment }}</p>
     <p>Payment Method: {{ booking.paid_using.name }}</p>
-    <p>Booking ID: {{ booking.id }}</p>
+    <p>Booking Invoice ID: {{ booking.invoice_id }}</p>
 
     <div class="back-link">
         <a href="{% url 'book_ticket' booking.event_id.id %}">Book Another Ticket</a>
@@ -24,4 +25,175 @@
 </div>
 
 </body>
-</html>
+</html> {% endcomment %}
+
+{% block title %}Booking Confirmation{% endblock %}
+
+{% block section-title %}Booking Successful!{% endblock %}
+
+{% block content %}
+    <!-- Ticket Component -->
+    <div class="container py-4" data-aos="fade-up">
+        <div class="row justify-content-center">
+            <!-- Left Section (QR Code and Info) -->
+            <div class="col-12 col-xl-4 d-flex align-items-stretch">
+                <div class="card shadow-sm border rounded-md w-100 left-column">
+                    <div class="card-body text-center">
+                        <img src="data:image/png;base64,{{ qr_code }}" class="img-fluid qr-code" alt="QR Code" />
+                        <p class="my-2 text-muted">Scan here to check in!</p>
+                        <p class="text-muted">Valid until: <strong>{{ booking.event_id.start_time|date:"d M Y H:iA" }}</strong></p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <p class="text-muted">Powered By</p>
+                        <img src="https://static.djangoproject.com/img/logos/django-logo-negative.png" class="img-fluid" alt="Powered by" style="max-width:25%; height: auto;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Section (Event Details) -->
+            <div class="col-12 col-xl-8 d-flex align-items-stretch">
+                <div class="card shadow-sm border rounded-md w-100 right-column">
+                    <img src="{{ booking.event_id.get_media.0.image.url }}" class="card-img-top event-image rounded-top" alt="Event Image" />
+                    <div class="card-body">
+                        <h5 class="card-title text-center font-weight-bold text-uppercase">Event Ticket</h5>
+                        
+                        <!-- Invoice & User Details -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <strong>Invoice ID:</strong>
+                                <span>{{ booking.invoice_id }}</span>
+                            </div>                            
+
+                            <div class="d-flex justify-content-between mb-1">
+                                <strong>Ticket Owner:</strong>
+                                <span>{{ booking.user_id.username }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Event Info -->
+                        <div class="mb-3">
+                            <p class="d-flex justify-content-between mb-1">
+                                <strong>Event:</strong>
+                                <span class="ml-2 font-weight-bold text-primary">{{ booking.event_id.name }}</span>
+                            </p>
+
+                            <p class="d-flex justify-content-between mb-1">
+                                <strong>Number of Seats Booked:</strong>
+                                <span class="ml-2 font-weight-bold">{{ booking.no_of_seats_booked }}</span>
+                            </p>
+
+                            <p class="d-flex justify-content-between mb-1">
+                                <strong>Date:</strong>
+                                <span class="ml-2 text-muted">{{ booking.event_id.date|date:"d M Y" }}</span>
+                            </p>
+
+                            <p class="d-flex justify-content-between mb-1">
+                                <strong>Start Time:</strong>
+                                <span class="ml-2 text-muted">{{ booking.event_id.start_time|date:"d M Y H:iA" }}</span>
+                            </p>
+
+                            <p class="d-flex justify-content-between mb-1">
+                                <strong>End Time:</strong>
+                                <span class="ml-2 text-muted">{{ booking.event_id.end_time|date:"d M Y H:iA" }}</span>
+                            </p>
+                        </div>
+
+                        <!-- Event Type & Venue -->
+                        <div class="border-top pt-2 mt-3">
+                            <p class="card-text ticket-detail d-flex justify-content-between mb-1">
+                                <strong>Hosted By:</strong>
+                                <span class="ml-2 font-weight-bold">{{ event.posted_by.username }}</span>
+                            </p>
+
+                            <p class="card-text ticket-detail d-flex justify-content-between mb-1">
+                                <strong>Venue Name:</strong>
+                                <span class="ml-2 font-weight-bold text-success">{{ event.venue_id.name }}</span>
+                            </p>
+
+                            <p class="card-text ticket-detail d-flex justify-content-between mb-1">
+                                <strong>Venue Location:</strong>
+                                <span class="ml-2 font-weight-bold text-success">{{ event.venue_id.location }}</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Email Info and Buttons Section -->
+    <div class="container mt-4" data-aos="fade-up">
+        <div class="row justify-content-center">
+            <!-- Email Info -->
+            <div class="col-12 text-center mb-3">
+                <p class="font-weight-bold">Your ticket has been sent to this email: <strong>{{ user.email }}</strong></p>
+            </div>
+
+            <!-- Button Row -->
+            <div class="col-12 col-md-6 d-flex justify-content-center">
+                <!-- Print PDF Button -->
+                <a href="{% url "serve_pdf" booking.id %}" class="btn btn-primary btn-lg btn-block mx-2">Print PDF</a>
+
+                <!-- Return to Home Button -->
+                <a href="{% url 'home' %}" class="btn btn-secondary btn-lg btn-block mx-2">Return to Home</a>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Suggested Events Section -->
+    <div class="container mt-5" data-aos="fade-up">
+        <h4 class="text-center mb-4">You May Also Like</h4>
+        <div class="container" data-aos="fade-up">
+          <section id="slider" class="slider section dark-background">
+
+            <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+              <div class="swiper init-swiper">
+
+                <script type="application/json" class="swiper-config">
+                    {
+                      "loop": true,
+                      "speed": 600,
+                      "autoplay": {
+                        "delay": 5000
+                      },
+                      "slidesPerView": "auto",
+                      "centeredSlides": true,
+                      "pagination": {
+                        "el": ".swiper-pagination",
+                        "type": "bullets",
+                        "clickable": true
+                      },
+                      "navigation": {
+                        "nextEl": ".swiper-button-next",
+                        "prevEl": ".swiper-button-prev"
+                      }
+                    }
+                  </script>
+
+                <div class="swiper-wrapper">
+
+                  {% for event in related_events %}
+                  <div class="swiper-slide"
+                    style="background-image: url('{{ event.get_media.0.image.url }}');">
+                    <div class="content">
+                      <h2><a href="{% url 'details' event.id %}">{{ event.name }}</a></h2>
+                      <p>{{ event.details|slice:":100" }}....</p>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+
+                <div class="swiper-pagination"></div>
+              </div>
+
+            </div>
+
+          </section>
+        </div>
+    </div>
+{% endblock %}

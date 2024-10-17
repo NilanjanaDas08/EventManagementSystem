@@ -1,8 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.utils import timezone
-
-# id field is automatically created in Django as a primary key, so no need to explicitly define it in any class.
 
 class User(AbstractUser):
     middle_name= models.CharField(max_length=255,blank=True,null=True)
@@ -31,5 +28,5 @@ class User(AbstractUser):
         blank=True,
     )
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.first_name} {self.last_name} Username: {self.username}"
 
