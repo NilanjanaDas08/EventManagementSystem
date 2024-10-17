@@ -4,19 +4,17 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from .forms import UserForm
 from Event.models import Genre
-from django.core.mail import send_mail
+from Authentication.models import User
+from django.core.mail import EmailMessage
 from django.conf import settings
 from django.core.cache import cache
 import random
 import time
 
 # Registration view
-<<<<<<< HEAD
-=======
 # NOTE: Need to account for other additional fields
 # NOTE: Need to render errors properly
 
->>>>>>> 0a799ccdaa0052883c1045ff385b1a4f116347f4
 def register(request):
     config = {}
     config['genres'] = Genre.objects.all()
@@ -48,21 +46,22 @@ def login_view(request):
 
         user = authenticate(request, email=email, password=password)
         if user is not None:
-<<<<<<< HEAD
             otp = generate_otp()
             # Store OTP in cache
-            cache.set(username, otp, OTP_TIME_LIMIT)
+            cache.clear()
+            cache.delete(user)
+            cache.set(user.id, otp, OTP_TIME_LIMIT)
             try:
-                send_mail(
-                    'Your OTP Code',
-                    f'Your OTP code is {otp}',
-                    settings.DEFAULT_FROM_EMAIL,
-                    [user.email],
-                    fail_silently=False,
+                email = EmailMessage(
+                    subject='Your OTP Code',
+                    body=f'Your OTP code is {otp}',
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    to=[f"{user.email}"],
                 )
-                return redirect('otp_verification', username=username)
+                email.send()
+                return redirect('otp_verification', username=user.username)
             except Exception as e:
-                messages.error(request, "Failed to send OTP. Please try again.")
+                messages.error("Failed to send OTP. Please try again.")
                 return render(request, 'registration/login.html', config)
         else:
             messages.error(request, "Invalid credentials")
@@ -72,12 +71,13 @@ def login_view(request):
 def otp_verification(request, username):
     if request.method == 'POST':
         otp_entered = request.POST['otp']
-        correct_otp = cache.get(username)
+        user = User.objects.get(username=username)
+        correct_otp = cache.get(user.id)
         current_time = time.time()
 
         if correct_otp is not None:
             if int(otp_entered) == correct_otp:
-                login(request, authenticate(request, username=username))
+                login(request, user, backend = "Authentication.backends.EmailBackend")
                 messages.success(request, f'Welcome, {username}!')
                 return redirect(request.GET.get('next', 'home'))
             else:
@@ -88,18 +88,6 @@ def otp_verification(request, username):
         messages.error(request, "No OTP generated for this user.")
 
     return render(request, 'registration/otp_verification.html', {'username': username})
-=======
-            login(request, user)
-            messages.success(request,f'Welcome,{email}!')
-            
-            next_url = request.GET.get('next','/')
-            if next_url: return redirect(next_url);
-            # return redirect('home')  # Fixed redirect to work properly
-        else:
-            messages.error(request, "Invalid credentials")
-            config['error'] = "You have entered wrong email and/or password."
-    return render(request, 'registration/login.html',config)
->>>>>>> 0a799ccdaa0052883c1045ff385b1a4f116347f4
 
 # Logout view
 def logout_view(request):

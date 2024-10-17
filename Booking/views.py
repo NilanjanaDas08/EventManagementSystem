@@ -48,7 +48,7 @@ def booking_confirm(request,booking_id):
     subject = f"Tickx - Booking for {context['event'].name} confirmed"
     body = f"You have successfully booked your event for {context['event'].name} on" + \
             f"{context['event'].date} at {context['event'].venue_id.name},{context['event'].venue_id.location} from" + \
-            f"{context['event'].start_time.strftime("%H:%m %p")} to {context['event'].end_time.strftime("%H:%m %p")}." + \
+            f"{context['event'].start_time.strftime('%H:%m %p')} to {context['event'].end_time.strftime('%H:%m %p')}." + \
             f"Please check attachment for your ticket!"
     from_email = settings.DEFAULT_FROM_EMAIL
     to_email = [f"{user.email}"]

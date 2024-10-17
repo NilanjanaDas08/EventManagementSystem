@@ -14,7 +14,7 @@ class EmailBackend(ModelBackend):
         try:
             User = get_user_model()
             user = User.objects.get(email = email)
-        except Exception as e:
+        except:
             return None
         else:
             if user.check_password(password) and self.user_can_authenticate(user):

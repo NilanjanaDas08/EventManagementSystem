@@ -8,6 +8,9 @@ call venv\Scripts\activate.bat
 echo Installing Django
 pip install Django
 
+echo Installing Decouple
+pip install python-decouple
+
 echo Installing Pillow
 pip install Pillow
 
@@ -25,6 +28,9 @@ pip install python-dotenv
 
 echo Installing weasyprint
 pip install weasyprint
+
+echo Installing xhtml2pdf
+pip install xhtml2pdf
 
 echo Installing qrcode
 pip install qrcode

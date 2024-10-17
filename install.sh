@@ -10,6 +10,10 @@ source venv/bin/activate
 echo "Installing Django"
 venv/bin/python -m pip install Django
 
+# Installing Decouple
+echo "Installing Decouple"
+venv/bin/python -m pip install python-decouple
+
 # Installing Pillow for ImageField
 echo "Installing Pillow"
 venv/bin/python -m pip install Pillow
@@ -33,6 +37,10 @@ venv/bin/python -m pip install python-dotenv
 # Installing Weasyprint
 echo "Installing weasyprint"
 venv/bin/python -m pip install weasyprint
+
+# Installing xhtml2pdf
+echo "Installing xhtml2pdf"
+venv/bin/python -m pip install xhtml2pdf
 
 # Installing QRCode
 echo "Installing qrcode"
