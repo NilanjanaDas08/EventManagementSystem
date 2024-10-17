@@ -105,19 +105,36 @@ def details(request, event_id):
     return render(request, 'details.html', config)
 
 '''def search(request):
-    events=Event.objects.none()
-    genres=Genre.objects.all()
-    search_query=[]
-    if request.method=='GET':
-        event=request.GET.get('name','').strip()
-        genre=request.GET.get('genre','').strip()
-        filter_criteria={'status':'UPCOMING'}              Nilanjana
-        if event:
-            filter_criteria['name__icontains']=event
-            search_query.append(event)
-        if genre:
-            filter_criteria['genres__name__icontains']=genre
-            search_query.append(genre)
-        events=Event.objects.filter(**filter_criteria)
-    return render(request,'event_list.html',{'events':events, 'search_query': search_query,'genres': genres, 'signed_in': request.user.get_username()})'''
+    events = []
+    genres = Genre.objects.all()
+    search_query = []
+
+    if request.method == 'GET':
+        event_name = request.GET.get('name', '').strip()
+        genre_name = request.GET.get('genre', '').strip()
+
+        # Search by event name (should be unique)
+        if event_name:
+            try:
+                event = Event.objects.get(name__iexact=event_name)  # Case-insensitive exact match
+                events.append(event)  # Append the found event to the list
+                search_query.append(event_name)  # Add the event name to search_query
+            except Event.DoesNotExist:
+                events = []  # No event found
+            except Event.MultipleObjectsReturned:
+                # Log or handle multiple returned events as necessary
+                events = Event.objects.filter(name__icontains=event_name)  # Fallback to filter
+
+        # Search by genre (can have multiple events)                #Nilanjana
+        if genre_name:
+            events = Event.objects.filter(genres__name__icontains=genre_name)
+            search_query.append(genre_name)  # Add the genre name to search_query
+
+    return render(request, 'event_list.html', {
+        'events': events,
+        'search_query': search_query,
+        'genres': genres,
+        'signed_in': request.user.get_username()
+    })'''
+
 

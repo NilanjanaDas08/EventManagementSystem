@@ -3,26 +3,34 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from .forms import UserForm
-from Event.models import Genre 
+from Event.models import Genre
+from django.core.mail import send_mail
+from django.conf import settings
+from django.core.cache import cache
+import random
+import time
 
 # Registration view
-# NOTE: Need to account for other additional fields
 def register(request):
     config = {}
     config['genres'] = Genre.objects.all()
-    form = config['form'] = UserForm()
+    form = UserForm()
     if request.method == 'POST':
         form = UserForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Registration successful! Please log in.')
-            return redirect('login')  # Fixed redirect to work properly
-        else: 
-            # print(form.errors)
-            # str = form.errors.as_text()
-            # config['error'] = str[str.find("*",str.find("*")+1)+1:] # Logging Registration Form Error
-            config['form'] = form # Sends errors correctly
+            return redirect('login')
+        else:
+            config['form'] = form  # Sends errors correctly
+    else:
+        config['form'] = form  # Include an empty form for GET requests
     return render(request, 'registration/Register.html', config)
+
+OTP_TIME_LIMIT = 600
+
+def generate_otp():
+    return random.randint(100000, 999999)
 
 # Login view
 def login_view(request):
@@ -33,25 +41,47 @@ def login_view(request):
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            login(request, user)
-            messages.success(request,f'Welcome,{username}!')
-            
-            next_url = request.GET.get('next','/')
-            if next_url: return redirect(next_url);
-            # return redirect('home')  # Fixed redirect to work properly
+            otp = generate_otp()
+            # Store OTP in cache
+            cache.set(username, otp, OTP_TIME_LIMIT)
+            try:
+                send_mail(
+                    'Your OTP Code',
+                    f'Your OTP code is {otp}',
+                    settings.DEFAULT_FROM_EMAIL,
+                    [user.email],
+                    fail_silently=False,
+                )
+                return redirect('otp_verification', username=username)
+            except Exception as e:
+                messages.error(request, "Failed to send OTP. Please try again.")
+                return render(request, 'registration/login.html', config)
         else:
             messages.error(request, "Invalid credentials")
             config['error'] = "You have entered wrong username and/or password."
-    return render(request, 'registration/login.html',config)
+    return render(request, 'registration/login.html', config)
+
+def otp_verification(request, username):
+    if request.method == 'POST':
+        otp_entered = request.POST['otp']
+        correct_otp = cache.get(username)
+        current_time = time.time()
+
+        if correct_otp is not None:
+            if int(otp_entered) == correct_otp:
+                login(request, authenticate(request, username=username))
+                messages.success(request, f'Welcome, {username}!')
+                return redirect(request.GET.get('next', 'home'))
+            else:
+                messages.error(request, "Invalid OTP.")
+        else:
+            messages.error(request, "OTP has expired. Please request a new one.")
+    else:
+        messages.error(request, "No OTP generated for this user.")
+
+    return render(request, 'registration/otp_verification.html', {'username': username})
 
 # Logout view
 def logout_view(request):
     logout(request)
-    # messages.success(request, "You have been logged out")
-    # return redirect('home')
-    return redirect(request.GET.get('next','/'))
-
-''''# Profile view (example)
-@login_required
-def profile(request):
-    return render(request, 'accounts/Profile.html')'''
+    return redirect(request.GET.get('next', '/'))

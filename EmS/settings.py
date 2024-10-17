@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -146,4 +147,10 @@ PAYPAL_RECEIVER_EMAIL = os.getenv('PAYPAL_RECEIVER_EMAIL')
 PAYPAL_TEST = os.getenv('PAYPAL_TEST')
 PAYPAL_PDT_TOKEN = os.getenv('PAYPAL_PDT_TOKEN')
 # PAYPAL_MODE=os.getenv('PAYPAL_MODE','sandbox')
+EMAIL_BACKEND=config('EMAIL_BACKEND')
+EMAIL_HOST=config('EMAIL_HOST')
+EMAIL_HOST_USER=config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD=config('EMAIL_HOST_PASSWORD')
+EMAIL_PORT=config('EMAIL_PORT', cast=int)
+DEFAULT_FROM_EMAIL=config('DEFAULT_FROM_EMAIL')
 
