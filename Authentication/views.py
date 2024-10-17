@@ -11,6 +11,12 @@ import random
 import time
 
 # Registration view
+<<<<<<< HEAD
+=======
+# NOTE: Need to account for other additional fields
+# NOTE: Need to render errors properly
+
+>>>>>>> 0a799ccdaa0052883c1045ff385b1a4f116347f4
 def register(request):
     config = {}
     config['genres'] = Genre.objects.all()
@@ -37,10 +43,12 @@ def login_view(request):
     config = {}
     config['genres'] = Genre.objects.all()
     if request.method == 'POST':
-        username = request.POST['username']
+        email = request.POST['email']
         password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
+
+        user = authenticate(request, email=email, password=password)
         if user is not None:
+<<<<<<< HEAD
             otp = generate_otp()
             # Store OTP in cache
             cache.set(username, otp, OTP_TIME_LIMIT)
@@ -80,6 +88,18 @@ def otp_verification(request, username):
         messages.error(request, "No OTP generated for this user.")
 
     return render(request, 'registration/otp_verification.html', {'username': username})
+=======
+            login(request, user)
+            messages.success(request,f'Welcome,{email}!')
+            
+            next_url = request.GET.get('next','/')
+            if next_url: return redirect(next_url);
+            # return redirect('home')  # Fixed redirect to work properly
+        else:
+            messages.error(request, "Invalid credentials")
+            config['error'] = "You have entered wrong email and/or password."
+    return render(request, 'registration/login.html',config)
+>>>>>>> 0a799ccdaa0052883c1045ff385b1a4f116347f4
 
 # Logout view
 def logout_view(request):
