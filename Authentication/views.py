@@ -9,10 +9,8 @@ from django.core.mail import EmailMessage
 from django.conf import settings
 from django.core.cache import cache
 import random
-import time
 
 # Registration view
-# NOTE: Need to account for other additional fields
 # NOTE: Need to render errors properly
 
 def register(request):
@@ -69,11 +67,11 @@ def login_view(request):
     return render(request, 'registration/login.html', config)
 
 def otp_verification(request, username):
+    user = User.objects.get(username=username)
+    email = user.email
     if request.method == 'POST':
         otp_entered = request.POST['otp']
-        user = User.objects.get(username=username)
         correct_otp = cache.get(user.id)
-        current_time = time.time()
 
         if correct_otp is not None:
             if int(otp_entered) == correct_otp:
@@ -87,7 +85,7 @@ def otp_verification(request, username):
     else:
         messages.error(request, "No OTP generated for this user.")
 
-    return render(request, 'registration/otp_verification.html', {'username': username})
+    return render(request, 'registration/otp_verification.html', {'username': username, 'email': email})
 
 # Logout view
 def logout_view(request):

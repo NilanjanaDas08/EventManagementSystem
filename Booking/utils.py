@@ -3,7 +3,7 @@ import io
 import base64
 from django.template.loader import render_to_string
 from xhtml2pdf import pisa
-# from weasyprint import HTML
+from weasyprint import HTML # In case of gobject error, comment out code
 from django.http import HttpResponse
 from django.contrib.staticfiles import finders
 from django.conf import settings
@@ -53,7 +53,7 @@ def render_pdf_view(request, pdf_config: dict):
 
         if pisa_status.err:
             return HttpResponse('We had some errors <pre>' + html + '</pre>')
-    # Using weasyprint for Linux
+    # Using weasyprint for Linux (In case of gobject error in Windows, comment out else block)
     else:
         static_url = request.build_absolute_uri(settings.STATIC_URL)
         HTML(string=html, base_url=static_url).write_pdf(pdf_buffer)

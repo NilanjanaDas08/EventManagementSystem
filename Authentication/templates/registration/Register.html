@@ -11,7 +11,7 @@
   <meta name="keywords" content="">
 
   <!-- Favicons -->
-  <link href="{% static 'assets/img/favicon.png' %}" rel="icon">
+  <link href="{% static 'assets/img/logo.png' %}" rel="icon">
   <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
 
   <!-- Fonts -->
@@ -44,7 +44,7 @@
 
       <a href="{% url 'home' %}" class="logo d-flex align-items-center me-auto me-xl-0">
         <!-- Uncomment the line below if you also wish to use an image logo -->
-        <!-- <img src="assets/img/logo.png" alt=""> -->
+        <img src="{% static 'assets/img/logo.png'%}" alt="">
         <h1 class="sitename">Tickx</h1>
       </a>
 
@@ -109,7 +109,13 @@
                           <div class="form-group row">
                               <label for="{{ fm.id_for_label }}" class="font-weight-semibold">{{ fm.label }}</label>
                               {{ fm }}
-                              <div class="text-danger mt-1">{{ fm.errors|striptags }}</div>
+                              <div class="text-danger mt-1">
+                                {% if fm.errors %}
+                                  {% for error in fm.errors %}
+                                    <p>{{ error|striptags }}</p>
+                                  {% endfor %}
+                                {% endif %}
+                              </div>
                           </div>
                       {% endfor %}
                       

@@ -14,6 +14,7 @@ class Booking(models.Model):
      created_at=models.DateTimeField(auto_now=True)
      updated_at=models.DateTimeField(auto_now=True)
      invoice_id = models.UUIDField(null=True)
+#      email_sent = models.BooleanField(null=True) # Should Add this to prevent multiple email send
 
      def __str__(self):
         return (f"Booking by {self.user_id.username} "
